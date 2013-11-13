@@ -1,6 +1,14 @@
 /* change xxxxx to your uw user id */
 USE ece536db_vcoste; 
 
+DROP TABLE IF EXISTS User;
+CREATE TABLE User(
+	userID  	  INT,
+	firstName 	  VARCHAR(100), 
+	lastName  	  VARCHAR(100), 	 
+	PRIMARY KEY (userID)
+);
+
 DROP TABLE IF EXISTS Address;
 CREATE TABLE Address(
 	addressID  	  INT,
@@ -16,11 +24,17 @@ DROP TABLE IF EXISTS Patient;
 CREATE TABLE Patient(
 	patientID INT,
 	alias 	  VARCHAR(20), 
-	firstName VARCHAR(100), 
-	lastName  VARCHAR(100), 
 	email 	  VARCHAR(100),
 	password  VARCHAR(254), 
-	PRIMARY KEY(patientID)
+	PRIMARY KEY (patientID),
+	FOREIGN KEY (patientID) REFERENCES User(userID)
+);
+
+DROP TABLE IF EXISTS Administrator;
+CREATE TABLE Administrator(
+	adminID INT,
+	PRIMARY KEY (patientID),
+	FOREIGN KEY (patientID) REFERENCES User(userID)
 );
 
 DROP TABLE IF EXISTS Specialization;
@@ -34,14 +48,13 @@ DROP TABLE IF EXISTS Doctor;
 CREATE TABLE Doctor( 	
 	doctorID 		INT,
 	alias 			VARCHAR(20), 
-	firstName  		VARCHAR(100), 
-	lastName 		VARCHAR(100), 
 	gender 			SMALLINT, 
 	dob 			DATE, 
 	homeAddressID  	VARCHAR(100), 
 	licenseYear 	INT,
     PRIMARY KEY (doctorID),
-    FOREIGN KEY (homeAddressID) REFERENCES Address(addressID)
+    FOREIGN KEY (homeAddressID) REFERENCES Address(addressID),
+    FOREIGN KEY (doctorID)  	REFERENCES User(userID)
 );
 
 DROP TABLE IF EXISTS WorkAddresses;
@@ -64,15 +77,26 @@ CREATE TABLE DoctorSpecialization(
 
 DROP TABLE IF EXISTS Review;
 CREATE TABLE Review(
+	reviewID   INT,
 	doctorID   INT,
 	patientID  INT,
 	rating 	   SMALLINT,
 	note       VARCHAR(200),
 	reviewDate DATE,
-	PRIMARY KEY (doctorID, patientID)
+	PRIMARY KEY (reviewID)
 	FOREIGN KEY (doctorID)  REFERENCES Doctor(doctorID),
 	FOREIGN KEY (patientID) REFERENCES Patient(patientID),
 );
+
+DROP TABLE IF EXISTS Likes;
+CREATE TABLE Likes(
+	doctorID   INT,
+	patientID  INT,
+	PRIMARY KEY (doctorID, patientID),
+	FOREIGN KEY (doctorID)  REFERENCES Doctor(doctorID),
+	FOREIGN KEY (patientID) REFERENCES Patient(patientID),
+);
+
 
 DROP TABLE IF EXISTS Friendship;
 CREATE TABLE Friendship(
