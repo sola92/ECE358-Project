@@ -107,24 +107,19 @@ CREATE TABLE Friendship(
 	FOREIGN KEY (followeeID) REFERENCES Patient(patientID)	
 );
 
+/*
+DROP VIEW IF EXISTS DocterProfileView; d
 CREATE VIEW DocterProfileView AS 
-SELECT *
-FROM 
-	(SELECT doctorID
-		   	alias,
-		   	firstName,
-		   	lastName,
-		   	gender,
-		  	licenseYear FROM Doctor) d
-	NATURAL JOIN WorkAddresses
-	NATURAL JOIN Address
-	NATURAL JOIN DoctorSpecialization
-	NATURAL JOIN Specialization
-	INNER JOIN (
-	 SELECT AVG(rating) AS averageRating, doctorID FROM Review
-	 GROUP BY doctorID
-	) AS r 
-	ON r.doctorID = d.doctorID
+    SELECT doctorID
+            alias,
+            firstName,
+            lastName,
+            gender,
+            licenseYear FROM Doctor AS d
+    NATURAL JOIN WorkAddresses
+    NATURAL JOIN Address
+    NATURAL JOIN DoctorSpecialization
+    NATURAL JOIN Specialization;*/
 
 
 
