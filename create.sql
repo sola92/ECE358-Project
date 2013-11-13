@@ -85,7 +85,7 @@ CREATE TABLE Review(
 	reviewDate DATE,
 	PRIMARY KEY (reviewID),
 	FOREIGN KEY (doctorID)  REFERENCES Doctor (doctorID),
-	FOREIGN KEY (patientID) REFERENCES Patient(patientID),
+	FOREIGN KEY (patientID) REFERENCES Patient(patientID)
 );
 
 DROP TABLE IF EXISTS Likes;
@@ -94,7 +94,7 @@ CREATE TABLE Likes(
 	patientID  INT,
 	PRIMARY KEY (doctorID, patientID),
 	FOREIGN KEY (doctorID)  REFERENCES Doctor(doctorID),
-	FOREIGN KEY (patientID) REFERENCES Patient(patientID),
+	FOREIGN KEY (patientID) REFERENCES Patient(patientID)
 );
 
 
@@ -102,9 +102,9 @@ DROP TABLE IF EXISTS Friendship;
 CREATE TABLE Friendship(
 	followerID INT,
 	followeeID INT,
-	PRIMARY KEY (followerID, followeeID)
+	PRIMARY KEY (followerID, followeeID),
 	FOREIGN KEY (followerID) REFERENCES Patient(patientID),
-	FOREIGN KEY (followeeID) REFERENCES Patient(patientID),	
+	FOREIGN KEY (followeeID) REFERENCES Patient(patientID)	
 );
 
 CREATE VIEW DocterProfileView AS 
