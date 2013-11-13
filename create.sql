@@ -1,5 +1,5 @@
 /* change xxxxx to your uw user id */
-USE ece356db_oaogunsa;
+USE ece356db_vcoste; 
 
 DROP TABLE IF EXISTS User;
 CREATE TABLE User(
