@@ -1,5 +1,5 @@
 /* change xxxxx to your uw user id */
-USE ece536db_vcoste; 
+USE ece356db_oaogunsa;
 
 DROP TABLE IF EXISTS User;
 CREATE TABLE User(
@@ -33,8 +33,8 @@ CREATE TABLE Patient(
 DROP TABLE IF EXISTS Administrator;
 CREATE TABLE Administrator(
 	adminID INT,
-	PRIMARY KEY (patientID),
-	FOREIGN KEY (patientID) REFERENCES User(userID)
+	PRIMARY KEY (adminID),
+	FOREIGN KEY (adminID) REFERENCES User(userID)
 );
 
 DROP TABLE IF EXISTS Specialization;
@@ -83,8 +83,8 @@ CREATE TABLE Review(
 	rating 	   SMALLINT,
 	note       VARCHAR(200),
 	reviewDate DATE,
-	PRIMARY KEY (reviewID)
-	FOREIGN KEY (doctorID)  REFERENCES Doctor(doctorID),
+	PRIMARY KEY (reviewID),
+	FOREIGN KEY (doctorID)  REFERENCES Doctor (doctorID),
 	FOREIGN KEY (patientID) REFERENCES Patient(patientID),
 );
 
