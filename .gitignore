@@ -1,1 +1,4 @@
 /ece356Project/nbproject/private/
+/ece356Project/build/
+*.DS_Store
+/ece356Project/web/.DS_Store
