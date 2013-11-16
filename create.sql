@@ -5,8 +5,10 @@ DROP TABLE IF EXISTS User;
 CREATE TABLE User(
 	userID  	  INT,
 	firstName 	  VARCHAR(100), 
-	lastName  	  VARCHAR(100), 	 
-	PRIMARY KEY (userID)
+	lastName  	  VARCHAR(100), 
+	alias	      VARCHAR(20), 
+	PRIMARY KEY (userID),
+	UNIQUE(alias)
 );
 
 DROP TABLE IF EXISTS Address;
@@ -23,7 +25,6 @@ CREATE TABLE Address(
 DROP TABLE IF EXISTS Patient;
 CREATE TABLE Patient(
 	patientID INT,
-	alias 	  VARCHAR(20), 
 	email 	  VARCHAR(100),
 	password  VARCHAR(254), 
 	PRIMARY KEY (patientID),
@@ -47,7 +48,6 @@ CREATE TABLE Specialization(
 DROP TABLE IF EXISTS Doctor;
 CREATE TABLE Doctor( 	
 	doctorID 		INT,
-	alias 			VARCHAR(20), 
 	gender 			SMALLINT, 
 	dob 			DATE, 
 	homeAddressID  	VARCHAR(100), 
