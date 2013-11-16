@@ -7,6 +7,7 @@ CREATE TABLE User(
 	firstName 	  VARCHAR(100), 
 	lastName  	  VARCHAR(100), 
 	alias	      VARCHAR(20), 
+	password  	  VARCHAR(254), 
 	PRIMARY KEY (userID),
 	UNIQUE(alias)
 );
@@ -26,7 +27,6 @@ DROP TABLE IF EXISTS Patient;
 CREATE TABLE Patient(
 	patientID INT,
 	email 	  VARCHAR(100),
-	password  VARCHAR(254), 
 	PRIMARY KEY (patientID),
 	FOREIGN KEY (patientID) REFERENCES User(userID)
 );
