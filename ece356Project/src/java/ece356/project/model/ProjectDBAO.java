@@ -79,22 +79,28 @@ public class ProjectDBAO {
             
         }
     }
-    public static void addUser(String firstName, String lastName, String alias, String password)
+    public static int addUser(String firstName, String lastName, String alias, String password)
             throws ClassNotFoundException, SQLException {
         {
             Connection con = null;
             PreparedStatement pstmt = null;
-            ArrayList ret = null;
             try {
-                
+                int ret = 0;
+                String query = "INSERT INTO User VALUES(userID, firstName, lastName, alias, password)";
                 con = getConnection();
-                pstmt = con.prepareStatement("INSERT INTO User VALUES(?, ?, ?, ?, ?)");
-                //make auto increment id pstmt.setInt(1, ...);
+                pstmt = con.prepareStatement(query);
                 pstmt.setString(2, firstName);
                 pstmt.setString(3, lastName);
                 pstmt.setString(4, alias);
                 pstmt.setString(5, password);
-                pstmt.executeUpdate();
+                pstmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+                
+                ResultSet rs = pstmt.getGeneratedKeys();
+                if (rs.next()){
+                    ret=rs.getInt(1);
+                }
+                
+                return ret;
             } finally {
                 if (pstmt != null) {
                     pstmt.close();
@@ -106,17 +112,19 @@ public class ProjectDBAO {
         }
     }
     
-    public static void addPatient(String email)
+    public static void addPatient(String firstName, String lastName, String alias, String password, String email)
             throws ClassNotFoundException, SQLException {
-        {
+        
             Connection con = null;
             PreparedStatement pstmt = null;
             ArrayList ret = null;
             try {
                 
                 con = getConnection();
-                pstmt = con.prepareStatement("INSERT INTO User VALUES(patientID, email)");
-                //make auto increment id pstmt.setInt(1, ...);
+                int userID = addUser(firstName, lastName, alias, password);
+                
+                pstmt = con.prepareStatement("INSERT INTO Patient VALUES(patientID, email)");
+                pstmt.setInt(1, userID);
                 pstmt.setString(2, email);
                 pstmt.executeUpdate();
             } finally {
@@ -127,8 +135,70 @@ public class ProjectDBAO {
                     con.close();
                 }
             }
-        }
+        
     }
+    
+    public static void addDoctor(String firstName, 
+                                  String lastName, 
+                                  String alias, 
+                                  String password, 
+                                  boolean gender, 
+                                  int dob, 
+                                  int homeAddressID, 
+                                  int license)
+            throws ClassNotFoundException, SQLException {
+        
+            Connection con = null;
+            PreparedStatement pstmt = null;
+            ArrayList ret = null;
+            try {
+                
+                con = getConnection();
+                int userID = addUser(firstName, lastName, alias, password);
+                
+                pstmt = con.prepareStatement("INSERT INTO Doctor VALUES(doctorID, gender, dob, homeAddressID, licenseYear)");
+                pstmt.setInt(1, userID);
+                pstmt.setBoolean(2, gender);
+                pstmt.setInt(3, dob);
+                pstmt.setInt(4, homeAddressID);
+                pstmt.setInt(5, license);
+                pstmt.executeUpdate();
+            } finally {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            }
+        
+    }
+    
+    public static void addAdministrator(String firstName, String lastName, String alias, String password)
+            throws ClassNotFoundException, SQLException {
+        
+            Connection con = null;
+            PreparedStatement pstmt = null;
+            ArrayList ret = null;
+            try {
+                
+                con = getConnection();
+                int userID = addUser(firstName, lastName, alias, password);
+                
+                pstmt = con.prepareStatement("INSERT INTO Patient VALUES(adminID)");
+                pstmt.setInt(1, userID);
+                pstmt.executeUpdate();
+            } finally {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            }
+        
+    }
+
 
 }
 

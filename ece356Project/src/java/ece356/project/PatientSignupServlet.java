@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
 
 import ece356.project.model.ProjectDBAO;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -26,7 +28,7 @@ import ece356.project.model.ProjectDBAO;
  * @author vincent
  */
 @WebServlet(urlPatterns = {"/PatientSignup"})
-public class PatientSignup extends HttpServlet {
+public class PatientSignupServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP
@@ -39,7 +41,7 @@ public class PatientSignup extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, ClassNotFoundException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         String firstName = request.getParameter("firstNameInput");
@@ -54,11 +56,11 @@ public class PatientSignup extends HttpServlet {
                 //error
             } else if(!password1.equals(password2)) {
                 //error
-           // } else if(ProjectDBAO.queryAlias(alias) > 0) {
+            } else if(ProjectDBAO.queryAlias(alias) > 0) {
                 //error
             } else {
                 //create user and populate db
-               // ProjectDBAO.addPatient(alias);
+                ProjectDBAO.addPatient(firstName, lastName, alias, password1, email1);
                 //go to another page
             }
         } finally {            
@@ -79,7 +81,13 @@ public class PatientSignup extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(PatientSignupServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(PatientSignupServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -94,7 +102,13 @@ public class PatientSignup extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            processRequest(request, response);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(PatientSignupServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(PatientSignupServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
