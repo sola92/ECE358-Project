@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-         <link rel="stylesheet" href="/ece356Project/static/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="/ece356Project/static/css/bootstrap.min.css" />
         <title>Login</title>
     </head>
     <body>
@@ -34,6 +34,7 @@
                   <button type="submit" class="btn btn-default">Submit</button>
                 </form>           
             </div>  
-        </div>             
+        </div> 
+         <script src="/ece356Project/static/js/bootstrap.min.js"></script>            
     </body>
 </html>
