@@ -17,7 +17,7 @@ public class Patient extends User {
 	    super(userID, firstName, lastName, alias, password);
 	    this.email 	   = email;
 	    this.patientID = patientID;
-	} 
+	}  
 
     public int getPatientID() {
     	return patientID;
