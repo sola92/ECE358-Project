@@ -51,11 +51,9 @@ CREATE TABLE Doctor(
 	gender 			SMALLINT, 
 	dob 			DATE, 
 	homeAddressID  	VARCHAR(100), 
-	workAddressID  	VARCHAR(100), 
 	licenseYear 	INT,
     PRIMARY KEY (doctorID),
     FOREIGN KEY (homeAddressID) REFERENCES Address(addressID),
-    FOREIGN KEY (workAddressID) REFERENCES Address(addressID),
     FOREIGN KEY (doctorID)  	REFERENCES User(userID)
 );
 
