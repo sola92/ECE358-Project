@@ -11,10 +11,10 @@ import java.util.Date;
  * @author Sola
  */
 public class Doctor extends User {
-	final Date dob;
-	final int  gender;
-	final Date licenseYear;
-	final Address homeAddress;
+	protected final Date dob;
+	protected final int  gender;
+	protected final Date licenseYear;
+	protected final Address homeAddress;
 
 	public Doctor(	int userID, String firstName, String lastName, String alias, 
 					String password, Date dob, int gender, Date licenseYear,

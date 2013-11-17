@@ -6,11 +6,11 @@ package ece356;
  * @author Sola
  */
 public class Address extends Model {
-	final int    addressID;
-	final String streetName;
-	final String postalCode;
-	final String city;
-	final String province;
+	protected final int    addressID;
+	protected final String streetName;
+	protected final String postalCode;
+	protected final String city;
+	protected final String province;
 
  	public Address(	int addressID, String streetName, 
  					String postalCode, String city, String province) {

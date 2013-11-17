@@ -10,11 +10,11 @@ package ece356;
  * @author Sola
  */
 public abstract class User extends Model {
-	final int    userID;
-	final String firstName;
-	final String lastName;
-	final String alias;
-	final String password;
+	protected final int    userID;
+	protected final String firstName;
+	protected final String lastName;
+	protected final String alias;
+	protected final String password;
 
 	public User(int userID, String firstName, String lastName, String alias, String password) {
 		this.alias     = alias;

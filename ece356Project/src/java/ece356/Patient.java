@@ -4,7 +4,7 @@ package ece356;
  * @author Sola
  */
 public class Patient extends User {
-	final String email;
+	protected final String email;
 	
 	public Patient(	int userID, String firstName, String lastName, 
 					String alias, String password, String email ) {
