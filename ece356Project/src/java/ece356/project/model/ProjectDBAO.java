@@ -93,7 +93,7 @@ public class ProjectDBAO {
                 pstmt.setString(1, firstName);
                 pstmt.setString(2, lastName);
                 pstmt.setString(3, alias);
-                pstmt.setString(4, password);
+                pstmt.setString(4, MD5(password));
                 pstmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
                 
                 ResultSet rs = pstmt.getGeneratedKeys();
