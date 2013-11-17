@@ -4,8 +4,8 @@
     Author     : Sola
 --%>
 <%@page import="java.util.List"%>
-<%@page import="ece356.Specialization"%>
-<%@page import="ece356.ProjectDBAO"%>
+<%@page import="ece356.model.Specialization"%>
+<%@page import="ece356.model.ProjectDBAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -26,6 +26,13 @@
                 <h3 style="text-align:center;">Create Doctor Account</h3>
                 <br></br>
                 <form class="form-horizontal" action="CreateDoctorServlet" method="POST" role="form">
+                  <div class="form-group">
+                    <label for="alias" class="col-sm-2 control-label">Username</label>
+                    <div class="col-sm-10">
+                      <input type="text" class="form-control" name="alias" 
+                            id="alias" placeholder="Enter a username">
+                    </div>
+                  </div>                  
                   <div class="form-group">
                     <label for="firstName" class="col-sm-2 control-label">First Name</label>
                     <div class="col-sm-10">

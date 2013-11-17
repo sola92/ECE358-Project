@@ -19,9 +19,10 @@
             <a class="navbar-brand" href="#">ECE356 Project</a>
           </div>
         </nav>
-        <br></br><br></br><br></br>
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
+                <h3 style="text-align:center;">Create Patient Account</h3>
+                <br></br>              
                 <form class="form-horizontal" role="form" action="PatientSignupServlet" method="POST">
                   <div class="form-group">
                     <label for="firstNameInput" class="col-sm-2 control-label">First Name</label>
@@ -54,8 +55,8 @@
                     </div>
                   </div>
                   <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                      <button type="submit" class="btn btn-default">Sign Up</button>
+                    <div class="col-sm-offset-2 col-sm-10 pull-right">
+                      <button type="submit" class="btn btn-default btn-lg pull-right">Sign Up</button>
                     </div>
                   </div>
                 </form>           

@@ -1,10 +1,15 @@
- import java.io.IOException;
-import java.io.PrintWriter;
+
+package ece356.servlet;
+
+import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import ece356.model.ProjectDBAO;
+import java.sql.Date;
 
 /**
  *
@@ -28,23 +33,38 @@ public class CreateDoctorServlet extends HttpServlet {
         String homePostalCode    = request.getParameter("homePostalCode");                                 
         String homeStreetAddress = request.getParameter("homeStreetAddress");
 
-        
+
         String workCity          = request.getParameter("workCity");
         String workProvince      = request.getParameter("workProvince");                          
         String workPostalCode    = request.getParameter("workPostalCode");
         String workStreetAddress = request.getParameter("workStreetAddress");
 
-        String gender            = request.getParameter("gender");
-        String licenseYear       = request.getParameter("licenseYear");
-        String[] specializations = request.getParameterValues("specialization[]");
+        Integer gender            = Integer.parseInt(request.getParameter("gender"));
+        Integer licenseYear       = Integer.parseInt(request.getParameter("licenseYear"));
+        String[] strSpecializations  = request.getParameterValues("specialization[]");
+        int[] specs  = new int[0];
+        if(strSpecializations != null) {
+           specs = new int[strSpecializations.length];
+           for(int i = 0; i < strSpecializations.length; i++) {
+               specs[i] = Integer.parseInt(strSpecializations[i]);
+           }
+        } 
 
-        
+        String alias     = request.getParameter("alias");
         String lastName  = request.getParameter("lastName");
         String password  = request.getParameter("password");
         String firstName = request.getParameter("firstName");
-                                             
-        String dobDay    = request.getParameter("dobDay");
-        String dobYear   = request.getParameter("dobYear");                                                                                                                  
-        String dobMonth  = request.getParameter("dobMonth");
+
+        Integer dobDay    = Integer.parseInt(request.getParameter("dobDay"));
+        Integer dobYear   = Integer.parseInt(request.getParameter("dobYear"));                                                                                                                  
+        Integer dobMonth  = Integer.parseInt(request.getParameter("dobMonth"));        
+        try {
+            int homeAddressID = ProjectDBAO.makeAddress(homeCity, homePostalCode, homeCity, homeProvince); 
+            Date dob = Date.valueOf(dobYear + "-" + dobMonth + "-" + dobDay);
+            ProjectDBAO.makeDoctor( firstName, lastName, alias, password, gender, 
+                                    dob, homeAddressID, licenseYear, specs );
+        } catch (Exception ex) {
+            throw new ServletException(ex);
+        }
     }
 }

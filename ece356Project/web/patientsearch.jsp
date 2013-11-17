@@ -3,8 +3,10 @@
     Created on : Nov 17, 2013, 2:54:23 AM
     Author     : Sola
 --%>
+<%@page import="ece356.model.User"%>
 <%
-    if(session.getAttribute("userIsPatient") == null || !(Boolean)session.getAttribute("userIsPatient")) {
+    Object x = session.getAttribute("user");
+    if(x == null || session.getAttribute("userIsPatient") == null || !(Boolean)session.getAttribute("userIsPatient")) {
         response.sendRedirect("index.jsp");
     }
 %>
@@ -17,6 +19,9 @@
         <title>Patient Search</title>
     </head>
     <body>
+        <script type="text/javascript">
+            window.CURRENT_USER_ID = <%= ((User)session.getAttribute("user")).getUserID() %>;
+        </script>
         <nav class="navbar navbar-default" role="navigation">
           <!-- Brand and toggle get grouped for better mobile display -->
           <div class="navbar-header">
@@ -41,6 +46,18 @@
         <script src="/ece356Project/static/js/bootstrap.min.js"></script>   
         <script type="text/javascript">
             $(document).ready(function () {
+                window.FOLLOW = function (elem) {
+                    elem = $(elem);
+                    var followerID = window.CURRENT_USER_ID
+                        followeeID = elem.data("p-id");
+                    $.ajax({
+                      url: "FollowPatient",
+                      type: "POST",
+                      data: { "followerID": followerID, "followeeID": followeeID }
+                    }).done(function( ) {
+                        elem.parent().fadeOut();
+                    }); 
+                }                
                 $('#query').keyup(function() {
                     var query = $(this).val();
                     $.ajax({

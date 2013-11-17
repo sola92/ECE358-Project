@@ -1,17 +1,14 @@
-package ece356;
+package ece356.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpSession;
 
+import ece356.model.ProjectDBAO;
+import ece356.model.User;
 /**
  *
  * @author Sola
@@ -39,7 +36,7 @@ public class LoginServlet extends HttpServlet {
             if(userExists) {
                 HttpSession session = request.getSession(true);
                 User u = ProjectDBAO.getPatientByAlias(alias);
-                session.setAttribute("userAlias", alias);
+                session.setAttribute("user", u);
                 session.setAttribute("userIsPatient", true);
                 response.sendRedirect(PATIENT_HOME_JSP);
             } else {

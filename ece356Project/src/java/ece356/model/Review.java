@@ -1,4 +1,4 @@
-package ece356;
+package ece356.model;
 
 import java.util.Date;
 
@@ -31,7 +31,7 @@ public class Review extends Model {
 	} 
 
 	public Boolean isRecommendation() {
-		return false;
+		return rating > 3;
 	} 	
 
 	public String getNote() {

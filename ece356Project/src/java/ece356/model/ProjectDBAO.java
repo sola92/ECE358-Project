@@ -1,7 +1,5 @@
-package ece356;
+package ece356.model;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -11,12 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 
 /**
  *
@@ -157,18 +150,27 @@ public class ProjectDBAO {
         return administrator;
     }     
     
-    public static List<Patient> searchPatientsByAlias(String alias)
+    public static List<Patient> searchPatientsByAlias(int currentUserID, String alias)
             throws ClassNotFoundException, SQLException {
         ArrayList<Patient> patients = new ArrayList<Patient>();
+        if(alias == null || alias.trim() == "") return patients;
         Connection connection       = null;
         PreparedStatement statement = null;        
-        String query = "SELECT * FROM Patient JOIN User WHERE alias LIKE ? ";
+        final String query = "SELECT * " +
+        "FROM (" +
+            "SELECT * FROM Patient INNER JOIN User  " +
+            "ON Patient.patientID = User.userID " +
+            "WHERE alias LIKE ? AND patientID <> ? " +
+        ") AS p " +
+        "WHERE (SELECT COUNT(*) FROM Friendship WHERE followerID = ? AND followeeID = p.patientID) = 0";
         try {
             connection   = getConnection();
             statement    = connection.prepareStatement(query);
             statement.setString(1, "%" + alias + "%");
-            ResultSet resultSet = statement.executeQuery(); resultSet.next();
-            while(resultSet.next()) patients.add(rowToPatient(resultSet));            
+            statement.setInt(2, currentUserID);
+            statement.setInt(3, currentUserID);
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()) patients.add(rowToPatient(resultSet));
         } finally {
             if (statement  != null) statement.close();
             if (connection != null) connection.close();
@@ -292,64 +294,120 @@ public class ProjectDBAO {
         try {
             connection = getConnection();
             statement  = connection.prepareStatement(
-                            "INSERT INTO Review(followerID, followerID) VALUES (?,?)");
+                            "INSERT INTO Friendship(followerID, followeeID) VALUES (?,?)");
             statement.setInt(1, followerID);
-            statement.setInt(2, followerID);
+            statement.setInt(2, followeeID);
+            statement.executeUpdate();
         } finally {
             if (statement  != null) statement.close();
             if (connection != null) connection.close();
         }            
     }           
     
-    public static void addDoctor(String firstName, 
-                                  String lastName, 
-                                  String alias, 
-                                  String password, 
-                                  boolean gender, 
-                                  int dob, 
-                                  int homeAddressID, 
-                                  int license)
+    public static int makeDoctor(
+                String firstName, String lastName, String alias, String password, 
+                int gender, Date dob, int homeAddressID, int license, int[] specializations )
             throws ClassNotFoundException, SQLException {
-        
-            Connection con = null;
-            PreparedStatement pstmt = null;
-            ArrayList ret = null;
-            try {
-                
-                con = getConnection();
-                int userID = makeUser(firstName, lastName, alias, password);
-                
-                pstmt = con.prepareStatement("INSERT INTO Doctor VALUES(?,?,?,?,?)");
-                pstmt.setInt(1, userID);
-                pstmt.setBoolean(2, gender);
-                pstmt.setInt(3, dob);
-                pstmt.setInt(4, homeAddressID);
-                pstmt.setInt(5, license);
-                pstmt.executeUpdate();
-            } finally {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-                throw new SQLException();
+        int userID                  = -1;
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        final String QUERY = "INSERT INTO Doctor(doctorID, gender, dob, homeAddressID, licenseYear) VALUES(?,?,?,?,?)";       
+        try {
+            userID      = makeUser(firstName, lastName, alias, password);
+            connection  = getConnection();
+            statement   = connection.prepareStatement(QUERY);
+            statement.setInt (1, userID);
+            statement.setInt (2, gender);
+            statement.setDate(3, dob);
+            statement.setInt (4, homeAddressID);
+            statement.setInt (5, license);
+            statement.executeUpdate();
+            addSpecialization(userID, specializations);
+        } finally {
+            if (statement  != null) statement.close();  
+            if (connection != null) connection.close();
+        }
+        return userID;   
+    }
+
+    public static void addSpecialization(int doctorID, int[] specializations) 
+        throws ClassNotFoundException, SQLException {
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        final String QUERY  = "INSERT INTO DoctorSpecialization(doctorID, specID) VALUES(?,?)";
+        try {
+            connection  = getConnection();
+            statement   = connection.prepareStatement(QUERY);
+            for(int specID: specializations) {
+                statement.setInt (1, doctorID);
+                statement.setInt (2, specID);
+                statement.addBatch();                                   
             }
-        
+            statement.executeBatch();
+        } finally {
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
+        }
     }
 
-/*
+    public static void addWorkAddresses(int doctorID, int[] addresses) 
+        throws ClassNotFoundException, SQLException {
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        final String QUERY  = "INSERT INTO WorkAddresses(doctorID, addressID) VALUES(?,?)";
+        try {
+            connection  = getConnection();
+            statement   = connection.prepareStatement(QUERY);
+            for(int addressID: addresses) {
+                statement.setInt(1, doctorID);
+                statement.setInt(2, addressID);
+                statement.addBatch();                                   
+            }
+            statement.executeBatch();
+        } finally {
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
+        }
+    }
+
+    public static Address getAddress(int aid) 
+            throws ClassNotFoundException, SQLException {
+        Address address             = null;
+        Patient patient             = null; 
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        final String QUERY = "SELECT * FROM Address WHERE addressID = ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(QUERY);
+            statement.setInt(1, aid);
+            statement.executeQuery();
+            ResultSet rs = statement.getGeneratedKeys(); rs.next();
+            String city         = rs.getString("city");
+            int    addressID    = rs.getInt("addressID");
+            String province     = rs.getString("province");        
+            String streetName   = rs.getString("streetName");
+            String postalCode   = rs.getString("postalCode");                
+            address = new Address(addressID, streetName, postalCode, city, province);
+        } finally {
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
+        }
+        return address;
+    }
+
     public static User getDoctorByAlias(String _alias) throws ClassNotFoundException, SQLException {
-        Patient patient             = null; 
+        Doctor doctor               = null; 
         Connection connection       = null;
         PreparedStatement statement = null;
+        final String QUERY = "SELECT * from Doctor JOIN User ON Doctor.doctorID = User.userID WHERE alias = ?";
         try {
             connection = getConnection();
-            statement  = connection.prepareStatement("SELECT * from Doctor JOIN User ON Doctor.doctorID = User.userID WHERE alias = ?");
+            statement  = connection.prepareStatement(QUERY);
             statement.setString(1, _alias);
             ResultSet result = statement.executeQuery();
             Date dob         = result.getDate  ("dob");
-            int gender       = result.getString("gender");            
+            int gender       = result.getInt   ("gender");            
             int userID       = result.getInt   ("userID");
             String email     = result.getString("email");
             String alias     = result.getString("alias");
@@ -357,45 +415,38 @@ public class ProjectDBAO {
             String password  = result.getString("password");
             String firstName = result.getString("firstName");
             Date licenseYear = result.getDate  ("gender");
-            Address homeAddress = result.getString("gender");
-            patient = new Patient(userID, firstName, lastName, alias, password, email);    
-            statement.close();
-
+            Address homeAddress = getAddress(result.getInt("addressID"));           
+            doctor = new Doctor(userID, firstName, lastName, alias, 
+                                password, dob, gender, licenseYear, homeAddress);    
         } finally {
-            if (statement != null)   statement.close();
-            if (connection != null)  connection.close();
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
         }
-        return patient;
+        return doctor;
     }
 
-    public static User getAddress(int aid) throws ClassNotFoundException, SQLException {
-        Patient patient             = null; 
+    public static int makeAddress(String streetAddress, String postalCode, String city, String province) 
+                        throws ClassNotFoundException, SQLException {
+        int addressID = -1;
         Connection connection       = null;
-        PreparedStatement statement = null;
+        PreparedStatement statement = null;    
+        final String QUERY = "INSERT INTO Address(streetAddress, postalCode, city, province) VALUES (?,?,?,?)";
         try {
             connection = getConnection();
-            statement  = connection.prepareStatement("SELECT * from Doctor JOIN User ON Doctor.doctorID = User.userID WHERE alias = ?");
-            statement.setString(1, _alias);
-            ResultSet result = statement.executeQuery();
-            Date dob         = result.getDate  ("dob");
-            int gender       = result.getString("gender");            
-            int userID       = result.getInt   ("userID");
-            String email     = result.getString("email");
-            String alias     = result.getString("alias");
-            String lastName  = result.getString("lastName");
-            String password  = result.getString("password");
-            String firstName = result.getString("firstName");
-            Date licenseYear = result.getDate  ("gender");
-            Address homeAddress = result.getString("gender");
-            patient = new Patient(userID, firstName, lastName, alias, password, email);    
-            statement.close();
-
+            statement  = connection.prepareStatement(QUERY, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, streetAddress);
+            statement.setString(2, postalCode);
+            statement.setString(3, city);
+            statement.setString(4, province);
+            statement.executeUpdate();
+            ResultSet resultSet = statement.getGeneratedKeys(); resultSet.next();
+            addressID = resultSet.getInt(1);  
         } finally {
-            if (statement != null)   statement.close();
-            if (connection != null)  connection.close();
-        }
-        return patient;
-    }*/
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
+        }            
+        return addressID;
+    }
 
     private static String MD5(String md5) {
        try {
@@ -404,7 +455,7 @@ public class ProjectDBAO {
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < array.length; ++i) {
               sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
-           }
+            }
             return sb.toString();
         } catch (java.security.NoSuchAlgorithmException e) {}
         return null;

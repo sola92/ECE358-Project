@@ -15,7 +15,7 @@ CREATE TABLE User(
 DROP TABLE IF EXISTS Address;
 CREATE TABLE Address(
 	addressID   INT AUTO_INCREMENT,
-	streetName  VARCHAR(100),		
+	streetAddress  VARCHAR(100),		
 	postalCode  VARCHAR(20),
 	city 	    VARCHAR(100),
 	province    VARCHAR(100), 

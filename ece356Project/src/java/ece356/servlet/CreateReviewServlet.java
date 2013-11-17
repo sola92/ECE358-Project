@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ece356;
+package ece356.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import ece356.model.ProjectDBAO;
 /**
  *
  * @author Sola
@@ -31,8 +32,8 @@ public class CreateReviewServlet extends HttpServlet {
         //Date reviewDate, 
         String note   = request.getParameter("note");
         int rating    = Integer.parseInt(request.getParameter("rating"));
-        int doctorID  = Integer.parseInt(request.getParameter("doctorID");
-        int patientID = Integer.parseInt(request.getParameter("patientID");
+        int doctorID  = Integer.parseInt(request.getParameter("doctorID"));
+        int patientID = Integer.parseInt(request.getParameter("patientID"));
     }
 
 }

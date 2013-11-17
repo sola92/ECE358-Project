@@ -4,9 +4,12 @@
     Author     : vincent
 --%>
 <%
-    if(session.getAttribute("userIsPatient") == null || !(Boolean)session.getAttribute("userIsPatient")) {
-        response.sendRedirect("index.jsp");
-    }
+  Object x = session.getAttribute("user");
+  if( x == null || 
+      session.getAttribute("userIsPatient") == null || 
+      !(Boolean)session.getAttribute("userIsPatient")) {
+      response.sendRedirect("index.jsp");
+  }
 %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>

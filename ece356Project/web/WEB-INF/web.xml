@@ -2,27 +2,27 @@
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
     <servlet>
         <servlet-name>CreateDoctorServlet</servlet-name>
-        <servlet-class>ece356.CreateDoctorServlet</servlet-class>
+        <servlet-class>ece356.servlet.CreateDoctorServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>ece356.LoginServlet</servlet-class>
+        <servlet-class>ece356.servlet.LoginServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>PatientSignupServlet</servlet-name>
-        <servlet-class>ece356.PatientSignupServlet</servlet-class>
+        <servlet-class>ece356.servlet.PatientSignupServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>PatientSearchServlet</servlet-name>
-        <servlet-class>ece356.PatientSearchServlet</servlet-class>
+        <servlet-class>ece356.servlet.PatientSearchServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>FollowPatientServlet</servlet-name>
-        <servlet-class>ece356.FollowPatientServlet</servlet-class>
+        <servlet-class>ece356.servlet.FollowPatientServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>CreateReviewServlet</servlet-name>
-        <servlet-class>ece356.CreateReviewServlet</servlet-class>
+        <servlet-class>ece356.servlet.CreateReviewServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>default</servlet-name>
@@ -46,7 +46,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>FollowPatientServlet</servlet-name>
-        <url-pattern>/FollowPatientServlet</url-pattern>
+        <url-pattern>/FollowPatient</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CreateReviewServlet</servlet-name>

@@ -5,14 +5,18 @@
 --%>
 
 <%@page import="java.util.List"%>
-<%@page import="ece356.Patient"%>
+<%@page import="ece356.model.Patient"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<ul>
+<ul style="list-style-type:None;padding:0px;" id="res">
     <%
         List<Patient> patients = (List<Patient>)request.getAttribute("patients");
         for(Patient p: patients) { %>
             <li>
-            	<%= p.getFirstName() %>
+                <button data-p-id="<%= p.getPatientID() %>" 
+                        data-follower-id="<%= p.getPatientID() %>" 
+                        class="btn btn-default"
+                        onclick="FOLLOW(this);">Follow</button>
+                <%= p.getFirstName() %>&nbsp<%= p.getLastName() %>
             </li>
         <% }
     %>

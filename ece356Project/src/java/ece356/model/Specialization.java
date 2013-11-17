@@ -1,4 +1,4 @@
-package ece356;
+package ece356.model;   
 
 
 /**

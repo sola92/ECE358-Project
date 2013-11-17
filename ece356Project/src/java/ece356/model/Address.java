@@ -1,4 +1,4 @@
-package ece356;
+package ece356.model;
 
 
 /**
@@ -13,7 +13,7 @@ public class Address extends Model {
 	protected final String province;
 
  	public Address(	int addressID, String streetName, 
- 					String postalCode, String city, String province) {
+ 					String postalCode, String city, String province ) {
  		this.city 	    = city;
  		this.province   = province;
 		this.addressID  = addressID;
