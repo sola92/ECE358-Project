@@ -22,7 +22,7 @@
         <br></br><br></br><br></br>
         <div class="row">
             <div class="col-md-4 col-md-offset-4">
-                <form class="form-horizontal" role="form" method="post" action="PatientSignUpServlet">
+                <form class="form-horizontal" role="form" action="PatientSignupServlet" method="POST">
                   <div class="form-group">
                     <label for="firstNameInput" class="col-sm-2 control-label">First Name</label>
                     <div class="col-sm-10">
