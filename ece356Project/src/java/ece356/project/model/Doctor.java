@@ -12,18 +12,16 @@ import java.util.Date;
 public class Doctor extends User {
 	Date dob;
 	int  gender;
-	int  doctorID;
 	Date licenseYear;
 	Address homeAddress;
 
 	public Doctor(	int userID, String firstName, String lastName, String alias, 
-					String password, Date dob, int gender, int doctorID, Date licenseYear,
-					Address homeAddressID ) {
+					String password, Date dob, int gender, Date licenseYear,
+					Address homeAddress ) {
 		super(userID, firstName, lastName, alias, password);
-		this.dob           = dob;
-		this.gender        = gender;
-		this.doctorID      = doctorID;
-		this.licenseYear   = licenseYear;
+		this.dob         = dob;
+		this.gender      = gender;
+		this.licenseYear = licenseYear;
 		this.homeAddress = homeAddress;		
 	}   
 
@@ -36,14 +34,14 @@ public class Doctor extends User {
 	}
 
 	public int getDoctorID() {
-		return doctorID;
+		return getUserID();
 	}
 
 	public Date getLicenseYear() {
 		return licenseYear;
 	}
 
-	public Address getHomeAddressID() {
+	public Address getHomeAddress() {
 		return homeAddress;
 	}      
 
