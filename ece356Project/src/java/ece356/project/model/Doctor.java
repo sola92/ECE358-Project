@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ece356.model;
+package ece356.project.model;
 
 import java.util.Date;
 /**
@@ -24,7 +24,7 @@ public class Doctor extends User {
 		this.gender        = gender;
 		this.doctorID      = doctorID;
 		this.licenseYear   = licenseYear;
-		this.homeAddressID = homeAddressID;		
+		this.homeAddress = homeAddress;		
 	}   
 
 	public Date getDOB() {
@@ -44,7 +44,7 @@ public class Doctor extends User {
 	}
 
 	public Address getHomeAddressID() {
-		return homeAddressID;
+		return homeAddress;
 	}      
 
 }
