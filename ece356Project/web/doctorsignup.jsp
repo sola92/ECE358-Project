@@ -19,7 +19,6 @@
             <a class="navbar-brand" href="#">ECE356 Project</a>
           </div>
         </nav>
-        </br>
         <div class="row">
             <div class="col-md-6 col-md-offset-3">
                 <h3 style="text-align:center;">Create Doctor Account</h3>
@@ -28,15 +27,31 @@
                   <div class="form-group">
                     <label for="firstName" class="col-sm-2 control-label">First Name</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" name="firstName" id="firstName" placeholder="Enter your first name">
+                      <input type="text" class="form-control" name="firstName" 
+                            id="firstName" placeholder="Enter your first name">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="lastName" class="col-sm-2 control-label">Last Name</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" name="lastName" id="lastName" placeholder="Enter your last name">
+                      <input type="text" class="form-control" name="lastName" 
+                            id="lastName" placeholder="Enter your last name">
                     </div>
                   </div>
+                  <div class="form-group">
+                    <label for="password" class="col-sm-2 control-label">Password</label>
+                    <div class="col-sm-10">
+                      <input type="password" class="form-control" name="password" 
+                            id="password" placeholder="Password">
+                    </div>
+                  </div>         
+                  <div class="form-group">
+                    <label for="extraPassword" class="col-sm-2 control-label">Re-Enter Password</label>
+                    <div class="col-sm-10">
+                      <input type="password" class="form-control" name="extraPassword" 
+                            id="extraPassword" placeholder="Re-enter Password">
+                    </div>
+                  </div>                           
                   <div class="form-group">
                     <label for="Specialization" class="col-sm-2 control-label">Date of Birth</label>
                     <div class="col-sm-10">
@@ -68,7 +83,7 @@
                         <div class="col-xs-3">
                           <select name="dobYear" class="form-control">
                             <option value="-1">Year</option>
-                            <% for (int i = 2013; i >= 1950; i--) { %>
+                            <% for (int i = 2010; i >= 1940; i--) { %>
                                <option value="<%= i %>"><%= i %></option>
                             <% } %> 
                           </select>                            
@@ -90,27 +105,30 @@
                   <div class="form-group">
                     <label for="Specialization" class="col-sm-2 control-label">Specialization</label>
                     <div class="col-sm-10">
-                      <label class="checkbox-inline">
-                        <input type="checkbox" name="specialization" id="specialization" value="1"> Podiatrics
-                      </label>
-                      <label class="checkbox-inline">
-                        <input type="checkbox" name="specialization" id="specialization" value="2"> Nuero
-                      </label>
-                      <label class="checkbox-inline">
-                        <input type="checkbox" name="specialization" id="specialization" value="3"> Dental
-                      </label>                     
+                      <% String[] specializations = new String[] {
+                            "Podiatrics", "Nuero", "Dental", "Other"
+                      };
+                      for (int i = 0; i < specializations.length; i++) { %>
+                        <label class="checkbox-inline">
+                          <input type="checkbox" name="specialization" id="specialization" value="1">
+                           <%= specializations[i] %>
+                        </label>         
+                        <% if((i + 1) % 3 == 0) { %> </br> <% } %>                                         
+                      <% } %>                                          
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="Specialization" class="col-sm-2 control-label">Year of License</label>
                     <div class="col-sm-10">
-                      <select name="licenseYear" class="form-control">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                      </select>                    
+                      <div class="row">
+                        <div class="col-xs-3">                      
+                          <select name="licenseYear" class="form-control">
+                            <% for (int i = 2013; i >= 1950; i--) { %>
+                              <option value="<%= i %>"><%= i %></option>
+                            <% } %> 
+                          </select>     
+                        </div>          
+                      </div>               
                     </div>
                   </div>                                      
                   </br>                
@@ -175,7 +193,7 @@
                   </div>                                                                                                   
                   <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                      <button type="submit" class="btn btn-default">Sign up</button>
+                      <button type="submit" class="btn btn-lg btn-default">Sign up</button>
                     </div>
                   </div>                 
                 </form>           

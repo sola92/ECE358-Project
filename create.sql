@@ -15,7 +15,6 @@ CREATE TABLE User(
 DROP TABLE IF EXISTS Address;
 CREATE TABLE Address(
 	addressID  	  INT,
-	streetNumber  VARCHAR(100),	
 	streetName    VARCHAR(100),		
 	postalCode    VARCHAR(20),
 	city 	      VARCHAR(100),
