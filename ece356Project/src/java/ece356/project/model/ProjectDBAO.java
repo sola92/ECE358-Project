@@ -79,7 +79,7 @@ public class ProjectDBAO {
             
         }
     }
-    public static int addUser(String firstName, String lastName, String alias, String password)
+    private static int addUser(String firstName, String lastName, String alias, String password)
             throws ClassNotFoundException, SQLException {
         {
             Connection con = null;
@@ -108,6 +108,7 @@ public class ProjectDBAO {
                 if (con != null) {
                     con.close();
                 }
+                throw new SQLException();
             }
         }
     }
@@ -134,6 +135,7 @@ public class ProjectDBAO {
                 if (con != null) {
                     con.close();
                 }
+                throw new SQLException();
             }
         
     }
@@ -170,6 +172,7 @@ public class ProjectDBAO {
                 if (con != null) {
                     con.close();
                 }
+                throw new SQLException();
             }
         
     }
@@ -195,10 +198,8 @@ public class ProjectDBAO {
                 if (con != null) {
                     con.close();
                 }
+                throw new SQLException();
             }
-        
     }
-
-
 }
 
