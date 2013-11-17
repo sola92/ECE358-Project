@@ -53,6 +53,22 @@ public class ProjectDBAO {
         return new Patient(userID, firstName, lastName, alias, password, email);    
     }
 
+    private static Doctor rowToDoctor(ResultSet result) throws SQLException {
+        int userID          = result.getInt("userID");
+        String email        = result.getString("email");
+        String alias        = result.getString("alias");
+        String lastName     = result.getString("lastName");
+        String password     = result.getString("password");
+        String firstName    = result.getString("firstName"); 
+        Date dob            = result.getDate("dob");
+        int gender          = result.getInt("gender");
+        Date license        = result.getDate("licenseYear");
+        Address homeAddress = getAddress(result.getInt("homeAddressID"));
+        return new Doctor(userID, firstName,lastName, alias, 
+                    password, dob, gender, licenseYear,
+                     homeAddress);    
+    }
+
     private static Administrator rowToAdmin(ResultSet result) throws SQLException {
         int userID       = result.getInt("userID");
         String alias     = result.getString("alias");
@@ -69,7 +85,7 @@ public class ProjectDBAO {
         int rating       = result.getInt("rating");
         String note      = result.getString("note");
         int reviewDate   = result.getInt("reviewDate");   
-        return new Review(rating, reviewID, java.sql.Date(reviewDate), note, doctorID, patientID);    
+        return new Review(rating, reviewID, new java.sql.Date(reviewDate), note, doctorID, getPatientByID(patientID);    
     }    
     
     public static Connection getConnection()
@@ -136,6 +152,26 @@ public class ProjectDBAO {
             connection = getConnection();
             statement  = connection.prepareStatement("SELECT * from Patient JOIN User ON Patient.patientID = User.userID WHERE alias = ?");
             statement.setString(1, _alias);
+            ResultSet result = statement.executeQuery();
+            result.next();
+            patient = rowToPatient(result);
+            statement.close();
+
+        } finally {
+            if (statement != null)   statement.close();
+            if (connection != null)  connection.close();
+        }
+        return patient;
+    } 
+
+    public static Patient getPatientByID(String patientID) throws ClassNotFoundException, SQLException {
+        Patient patient             = null; 
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getConnection();
+            statement  = connection.prepareStatement("SELECT * from Patient JOIN User ON Patient.patientID = User.userID WHERE patientID = ?");
+            statement.setString(1, patientID);
             ResultSet result = statement.executeQuery();
             result.next();
             patient = rowToPatient(result);
@@ -446,6 +482,26 @@ public class ProjectDBAO {
             }   
     }
 
+    public static Doctor getDoctorByID(String doctorID) throws ClassNotFoundException, SQLException {
+        Doctor doctor               = null; 
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getConnection();
+            statement  = connection.prepareStatement("SELECT * from Doctor JOIN User ON Doctor.doctorID = User.userID WHERE doctorID = ?");
+            statement.setString(1, doctorID);
+            ResultSet result = statement.executeQuery();
+            result.next();
+            doctor = rowToDoctor(result);
+            statement.close();
+
+        } finally {
+            if (statement != null)   statement.close();
+            if (connection != null)  connection.close();
+        }
+        return doctor;
+    } 
+
     public static int makeAddress(String streetName, 
                                   String postalCode, 
                                   String city, 
@@ -562,36 +618,30 @@ public class ProjectDBAO {
             if (connection != null)  connection.close();
         }
         return patient;
-    }
+    }*/
 
-    public static User getAddress(int aid) throws ClassNotFoundException, SQLException {
-        Patient patient             = null; 
+    public static Address getAddress(int aid) throws ClassNotFoundException, SQLException {
+        Address address             = null; 
         Connection connection       = null;
         PreparedStatement statement = null;
         try {
             connection = getConnection();
-            statement  = connection.prepareStatement("SELECT * from Doctor JOIN User ON Doctor.doctorID = User.userID WHERE alias = ?");
-            statement.setString(1, _alias);
+            statement  = connection.prepareStatement("SELECT * from Address WHERE addressID = ?");
+            statement.setString(1, aid);
             ResultSet result = statement.executeQuery();
-            Date dob         = result.getDate  ("dob");
-            int gender       = result.getString("gender");            
-            int userID       = result.getInt   ("userID");
-            String email     = result.getString("email");
-            String alias     = result.getString("alias");
-            String lastName  = result.getString("lastName");
-            String password  = result.getString("password");
-            String firstName = result.getString("firstName");
-            Date licenseYear = result.getDate  ("gender");
-            Address homeAddress = result.getString("gender");
-            patient = new Patient(userID, firstName, lastName, alias, password, email);    
+            String streetName = result.getString("streetName");
+            String postalCode = result.getString("postalCode");
+            String city = result.getString("city");
+            String province = result.getString("province");
+            address = new Address( aid, streetName, postalCode, city, province));    
             statement.close();
 
         } finally {
             if (statement != null)   statement.close();
             if (connection != null)  connection.close();
         }
-        return patient;
-    }*/
+        return address;
+    }
 
     private static String MD5(String md5) {
        try {
