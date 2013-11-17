@@ -79,6 +79,7 @@ public class ProjectDBAO {
             
         }
     }
+    
     public static int addUser(String firstName, String lastName, String alias, String password)
             throws ClassNotFoundException, SQLException {
         {
@@ -196,9 +197,44 @@ public class ProjectDBAO {
                     con.close();
                 }
             }
-        
     }
 
+    public static Boolean userExists(String alias, String password)
+            throws ClassNotFoundException, SQLException {
+            Boolean exists = false;
+            Connection connection   = null;
+            PreparedStatement pstmt = null;
+            
+            try {
+                
+                pstmt = connection.prepareStatement("SELECT COUNT(*) FROM User WHERE alias = ? AND password = ?");
+                pstmt.setString(1, alias);
+                pstmt.setString(1, MD5(password));
+                exists = pstmt.executeQuery().getInt("count(alias)") == 1;
+            } finally {
+                if (pstmt != null) {
+                    pstmt.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            }
+            return exists;
+    }    
+
+    private static String MD5(String md5) {
+       try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
+            byte[] array = md.digest(md5.getBytes());
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < array.length; ++i) {
+              sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
+           }
+            return sb.toString();
+        } catch (java.security.NoSuchAlgorithmException e) {
+        }
+        return null;
+    }  
 
 }
 
