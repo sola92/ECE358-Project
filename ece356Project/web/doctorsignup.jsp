@@ -8,7 +8,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="/ece356Project/static/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="static/css/bootstrap.min.css" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Doctor Sign up</title>
     </head>
@@ -23,7 +23,7 @@
             <div class="col-md-6 col-md-offset-3">
                 <h3 style="text-align:center;">Create Doctor Account</h3>
                 <br></br>
-                <form class="form-horizontal" role="form">
+                <form class="form-horizontal" action="CreateDoctorServlet" method="POST" role="form">
                   <div class="form-group">
                     <label for="firstName" class="col-sm-2 control-label">First Name</label>
                     <div class="col-sm-10">
@@ -199,6 +199,6 @@
                 </form>           
             </div>  
         </div>
-        <script src="/ece356Project/static/js/bootstrap.min.js"></script>            
+        <script src="static/js/bootstrap.min.js"></script>            
     </body>
 </html>

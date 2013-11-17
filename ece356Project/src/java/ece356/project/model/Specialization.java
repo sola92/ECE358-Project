@@ -18,10 +18,10 @@ public class Specialization extends Model {
 	}    
 
 	public int getSpecID() {
-			return specID;
+		return specID;
 	}
 
 	public String getName() {
-			return name;
+		return name;
 	}
 }

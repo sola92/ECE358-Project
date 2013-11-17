@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ece356.project;
+
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -77,7 +77,30 @@ public class CreateDoctorServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        
+        String homeCity       = request.getParameter("homeCity");
+        String homeProvince   = request.getParameter("homeProvince");        
+        String homePostalCode = request.getParameter("homePostalCode");                                 
+        String homeStreetAddress = request.getParameter("homeStreetAddress");
+
+        
+        String workCity       = request.getParameter("workCity");
+        String workProvince   = request.getParameter("workProvince");                          
+        String workPostalCode = request.getParameter("workPostalCode");
+        String workStreetAddress = request.getParameter("workStreetAddress");
+
+        String gender      = request.getParameter("gender");
+        String licenseYear = request.getParameter("licenseYear");
+        String[] specializations = request.getParameterValues("specialization[]");
+
+        
+        String lastName  = request.getParameter("lastName");
+        String password  = request.getParameter("password");
+        String firstName = request.getParameter("firstName");
+                                             
+        String dobDay   = request.getParameter("dobDay");
+        String dobYear  = request.getParameter("dobYear");                                                                                                                  
+        String dobMonth = request.getParameter("dobMonth");
     }
 
     /**

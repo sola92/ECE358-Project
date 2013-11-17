@@ -9,18 +9,16 @@ package ece356.project.model;
  * @author Sola
  */
 public class Patient extends User {
-	int patientID;
 	String email;
 	
 	public Patient(	int userID, String firstName, String lastName, 
-					String alias, String password, int patientID, String email ) {
+					String alias, String password, String email ) {
 	    super(userID, firstName, lastName, alias, password);
-	    this.email 	   = email;
-	    this.patientID = patientID;
+	    this.email = email;
 	}  
 
     public int getPatientID() {
-    	return patientID;
+    	return getUserID();
     }
 
 	public String getEmail() {
