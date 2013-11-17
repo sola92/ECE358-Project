@@ -14,18 +14,18 @@ CREATE TABLE User(
 
 DROP TABLE IF EXISTS Address;
 CREATE TABLE Address(
-	addressID  	  INT,
-	streetName    VARCHAR(100),		
-	postalCode    VARCHAR(20),
-	city 	      VARCHAR(100),
-	province      VARCHAR(100), 
+	addressID   INT,
+	streetName  VARCHAR(100),		
+	postalCode  VARCHAR(20),
+	city 	    VARCHAR(100),
+	province    VARCHAR(100), 
 	PRIMARY KEY(addressID)
 );
 
 DROP TABLE IF EXISTS Patient;
 CREATE TABLE Patient(
-	patientID INT,
 	email 	  VARCHAR(100),
+	patientID INT,
 	PRIMARY KEY (patientID),
 	FOREIGN KEY (patientID) REFERENCES User(userID)
 );

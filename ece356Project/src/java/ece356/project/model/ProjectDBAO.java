@@ -203,28 +203,49 @@ public class ProjectDBAO {
             }
     }
 
-    public static Boolean userExists(String alias, String password)
+    public static Boolean verifyExists(String alias, String password)
             throws ClassNotFoundException, SQLException {
             Boolean exists = false;
             Connection connection   = null;
-            PreparedStatement pstmt = null;
-            
+            PreparedStatement statement = null;
             try {
-                
-                pstmt = connection.prepareStatement("SELECT COUNT(*) FROM User WHERE alias = ? AND password = ?");
-                pstmt.setString(1, alias);
-                pstmt.setString(1, MD5(password));
-                exists = pstmt.executeQuery().getInt("count(alias)") == 1;
+                statement = connection.prepareStatement("SELECT COUNT(*) FROM User WHERE alias = ? AND password = ?");
+                statement.setString(1, alias);
+                statement.setString(2, MD5(password));
+                exists = statement.executeQuery().getInt("COUNT(*)") == 1;
+                statement.close();
             } finally {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-                if (connection != null) {
-                    connection.close();
-                }
+                if (statement != null)   statement.close();
+                if (connection != null)  connection.close();
             }
             return exists;
-    }    
+    } 
+
+    public static User getPatientByAlias(String _alias) throws ClassNotFoundException, SQLException {
+            Patient patient             = null; 
+            Connection connection       = null;
+            PreparedStatement statement = null;
+            try {
+                connection = getConnection();
+                statement  = connection.prepareStatement("SELECT * from Patient JOIN User ON Patient.patientID = User.userID WHERE alias = ?");
+                statement.setString(1, _alias);
+                ResultSet result = statement.executeQuery();
+                int userID       = result.getInt("userID");
+                String email     = result.getString("email");
+                String alias     = result.getString("alias");
+                String lastName  = result.getString("lastName");
+                String password  = result.getString("password");
+                String firstName = result.getString("firstName");
+                
+                patient = new Patient(userID, firstName, lastName, alias, password, email);    
+                statement.close();
+
+            } finally {
+                if (statement != null)   statement.close();
+                if (connection != null)  connection.close();
+            }
+            return patient;
+    }        
 
     private static String MD5(String md5) {
        try {
