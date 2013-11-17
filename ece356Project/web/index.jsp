@@ -19,7 +19,7 @@
             <a class="navbar-brand" href="#">ECE356 Project</a>
           </div>
         </nav>
-        <br></br><br></br><br></br>
+        <br></br><br></br>
         <div class="row">
             <div class="col-md-4 col-md-offset-4">
                 <form role="form">
@@ -32,6 +32,7 @@
                     <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
                   </div>
                   <button type="submit" class="btn btn-default">Submit</button>
+                  <a href="patientSignUp.jsp">Sign Up</a>
                 </form>           
             </div>  
         </div> 
