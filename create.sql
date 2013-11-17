@@ -3,7 +3,7 @@ USE ece356db_oaogunsa;
 
 DROP TABLE IF EXISTS User;
 CREATE TABLE User(
-	userID  	  INT,
+	userID  	  INT AUTO_INCREMENT,
 	firstName 	  VARCHAR(100), 
 	lastName  	  VARCHAR(100), 
 	alias	      VARCHAR(20), 
@@ -14,7 +14,7 @@ CREATE TABLE User(
 
 DROP TABLE IF EXISTS Address;
 CREATE TABLE Address(
-	addressID   INT,
+	addressID   INT AUTO_INCREMENT,
 	streetName  VARCHAR(100),		
 	postalCode  VARCHAR(20),
 	city 	    VARCHAR(100),
@@ -39,7 +39,7 @@ CREATE TABLE Administrator(
 
 DROP TABLE IF EXISTS Specialization;
 CREATE TABLE Specialization(
-	specID INT, 
+	specID INT AUTO_INCREMENT, 
 	name   VARCHAR(100),
 	PRIMARY KEY(specID)
 );
@@ -76,7 +76,7 @@ CREATE TABLE DoctorSpecialization(
 
 DROP TABLE IF EXISTS Review;
 CREATE TABLE Review(
-	reviewID   INT,
+	reviewID   INT AUTO_INCREMENT,
 	doctorID   INT,
 	patientID  INT,
 	rating 	   SMALLINT,

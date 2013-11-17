@@ -25,11 +25,11 @@
                 <form role="form" action="LoginServlet" method="POST">
                   <div class="form-group">
                     <label for="alias">Username</label>
-                    <input type="text" name="alias" class="form-control" id="alias" placeholder="Enter email">
+                    <input type="text" name="alias" class="form-control" id="alias" placeholder="Enter your username">
                   </div>
                   <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+                    <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password">
                   </div>
                   <button type="submit" class="btn btn-primary">Submit</button>
                   <a class="btn btn-default" href="patientSignUp.jsp">Patient Sign Up</a>

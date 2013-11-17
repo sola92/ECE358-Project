@@ -21,48 +21,36 @@
         </nav>
         <br></br><br></br><br></br>
         <div class="row">
-            <div class="col-md-4 col-md-offset-4">
+            <div class="col-md-6 col-md-offset-3">
                 <form class="form-horizontal" role="form" action="PatientSignupServlet" method="POST">
                   <div class="form-group">
                     <label for="firstNameInput" class="col-sm-2 control-label">First Name</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" id="firstNameInput" placeholder="First Name">
+                      <input type="text" class="form-control" name="firstNameInput" id="firstNameInput" placeholder="First Name">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="lastNameInput" class="col-sm-2 control-label">Last Name</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" id="lastNameInput" placeholder="Last Name">
+                      <input type="text" class="form-control" name="lastNameInput" id="lastNameInput" placeholder="Last Name">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="aliasInput" class="col-sm-2 control-label">Create Alias</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" id="aliasInput" placeholder="Alias">
+                      <input type="text" class="form-control" name="aliasInput" id="aliasInput" placeholder="Alias">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">Enter Email</label>
                     <div class="col-sm-10">
-                      <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="inputEmail4" class="col-sm-2 control-label">Confirm Email</label>
-                    <div class="col-sm-10">
-                      <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+                      <input type="email" class="form-control" name="inputEmail3" id="inputEmail3" placeholder="Email">
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">Create Password</label>
                     <div class="col-sm-10">
-                      <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="inputPassword4" class="col-sm-2 control-label">Confirm Password</label>
-                    <div class="col-sm-10">
-                      <input type="password" class="form-control" id="inputPassword4" placeholder="Password">
+                      <input type="password" class="form-control" name="inputPassword3" id="inputPassword3" placeholder="Password">
                     </div>
                   </div>
                   <div class="form-group">

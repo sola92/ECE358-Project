@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
 
-import ece356.project.model.ProjectDBAO;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,30 +39,15 @@ public class PatientSignupServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String firstName = request.getParameter("firstNameInput");
+        String lastName  = request.getParameter("lastNameInput");
+        String alias     = request.getParameter("aliasInput");
+        String email1    = request.getParameter("inputEmail3");
+        String password1 = request.getParameter("inputPassword3");
         try {
-            String firstName = request.getParameter("firstNameInput");
-            String lastName = request.getParameter("lastNameInput");
-            String alias = request.getParameter("aliasInput");
-            String email1 = request.getParameter("inputEmail3");
-            String email2 = request.getParameter("inputEmail4");
-            String password1 = request.getParameter("inputPassword3");
-            String password2 = request.getParameter("inputPassword4");
-            
-//            if(!email1.equals(email2)) {
-//                //error
-//            } else if(!password1.equals(password2)) {
-//                //error
-//            } else if(ProjectDBAO.queryAlias(alias) > 0) {
-//                //error
-//            } else {
-                //create user and populate db
-                ProjectDBAO.addPatient(firstName, lastName, alias, password1, email1);
-                //go to another page
-//            }
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(PatientSignupServlet.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
-            Logger.getLogger(PatientSignupServlet.class.getName()).log(Level.SEVERE, null, ex);
+            ProjectDBAO.makePatient(firstName, lastName, alias, password1, email1);
+        } catch(Exception e) {
+            throw new ServletException(e);
         }
-    }
+     }
 }
