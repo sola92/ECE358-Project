@@ -31,8 +31,8 @@ public class CreateReviewServlet extends HttpServlet {
         //Date reviewDate, 
         String note   = request.getParameter("note");
         int rating    = Integer.parseInt(request.getParameter("rating"));
-        int doctorID  = Integer.parseInt(request.getParameter("doctorID");
-        int patientID = Integer.parseInt(request.getParameter("patientID");
+        int doctorID  = Integer.parseInt(request.getParameter("doctorID"));
+        int patientID = Integer.parseInt(request.getParameter("patientID"));
     }
 
 }

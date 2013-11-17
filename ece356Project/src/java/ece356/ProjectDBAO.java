@@ -53,7 +53,7 @@ public class ProjectDBAO {
         return new Patient(userID, firstName, lastName, alias, password, email);    
     }
 
-    private static Doctor rowToDoctor(ResultSet result) throws SQLException {
+    private static Doctor rowToDoctor(ResultSet result) throws SQLException, ClassNotFoundException {
         int userID          = result.getInt("userID");
         String email        = result.getString("email");
         String alias        = result.getString("alias");
@@ -63,9 +63,10 @@ public class ProjectDBAO {
         Date dob            = result.getDate("dob");
         int gender          = result.getInt("gender");
         Date license        = result.getDate("licenseYear");
-        Address homeAddress = getAddress(result.getInt("homeAddressID"));
+        int addressID       = result.getInt("homeAddressID");
+        Address homeAddress = getAddressFromID(addressID);
         return new Doctor(userID, firstName,lastName, alias, 
-                    password, dob, gender, licenseYear,
+                    password, dob, gender, license,
                      homeAddress);    
     }
 
@@ -78,14 +79,14 @@ public class ProjectDBAO {
         return new Administrator(userID, firstName, lastName, alias, password);    
     }    
 
-    private static Review rowToReview(ResultSet result) throws SQLException {
+    private static Review rowToReview(ResultSet result) throws SQLException, ClassNotFoundException {
         int reviewID     = result.getInt("reviewID");
         int doctorID     = result.getInt("doctorID");
         int patientID    = result.getInt("patientID");
         int rating       = result.getInt("rating");
         String note      = result.getString("note");
         int reviewDate   = result.getInt("reviewDate");   
-        return new Review(rating, reviewID, new java.sql.Date(reviewDate), note, doctorID, getPatientByID(patientID);    
+        return new Review(rating, reviewID, new java.util.Date(reviewDate), note, getDoctorByID(doctorID), getPatientByID(patientID));    
     }    
     
     public static Connection getConnection()
@@ -164,14 +165,14 @@ public class ProjectDBAO {
         return patient;
     } 
 
-    public static Patient getPatientByID(String patientID) throws ClassNotFoundException, SQLException {
+    public static Patient getPatientByID(int patientID) throws ClassNotFoundException, SQLException {
         Patient patient             = null; 
         Connection connection       = null;
         PreparedStatement statement = null;
         try {
             connection = getConnection();
             statement  = connection.prepareStatement("SELECT * from Patient JOIN User ON Patient.patientID = User.userID WHERE patientID = ?");
-            statement.setString(1, patientID);
+            statement.setInt(1, patientID);
             ResultSet result = statement.executeQuery();
             result.next();
             patient = rowToPatient(result);
@@ -482,14 +483,14 @@ public class ProjectDBAO {
             }   
     }
 
-    public static Doctor getDoctorByID(String doctorID) throws ClassNotFoundException, SQLException {
+    public static Doctor getDoctorByID(int doctorID) throws ClassNotFoundException, SQLException {
         Doctor doctor               = null; 
         Connection connection       = null;
         PreparedStatement statement = null;
         try {
             connection = getConnection();
             statement  = connection.prepareStatement("SELECT * from Doctor JOIN User ON Doctor.doctorID = User.userID WHERE doctorID = ?");
-            statement.setString(1, doctorID);
+            statement.setInt(1, doctorID);
             ResultSet result = statement.executeQuery();
             result.next();
             doctor = rowToDoctor(result);
@@ -620,20 +621,20 @@ public class ProjectDBAO {
         return patient;
     }*/
 
-    public static Address getAddress(int aid) throws ClassNotFoundException, SQLException {
+    public static Address getAddressFromID(int aid) throws ClassNotFoundException, SQLException {
         Address address             = null; 
         Connection connection       = null;
         PreparedStatement statement = null;
         try {
             connection = getConnection();
             statement  = connection.prepareStatement("SELECT * from Address WHERE addressID = ?");
-            statement.setString(1, aid);
+            statement.setInt(1, aid);
             ResultSet result = statement.executeQuery();
             String streetName = result.getString("streetName");
             String postalCode = result.getString("postalCode");
             String city = result.getString("city");
             String province = result.getString("province");
-            address = new Address( aid, streetName, postalCode, city, province));    
+            address = new Address( aid, streetName, postalCode, city, province);    
             statement.close();
 
         } finally {
