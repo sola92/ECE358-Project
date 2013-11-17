@@ -86,13 +86,13 @@ public class ProjectDBAO {
             PreparedStatement pstmt = null;
             try {
                 int ret = 0;
-                String query = "INSERT INTO User VALUES(userID, firstName, lastName, alias, password)";
+                String query = "INSERT INTO User (firstName, lastName, alias, password) VALUES(?,?,?,?)";
                 con = getConnection();
                 pstmt = con.prepareStatement(query);
-                pstmt.setString(2, firstName);
-                pstmt.setString(3, lastName);
-                pstmt.setString(4, alias);
-                pstmt.setString(5, password);
+                pstmt.setString(1, firstName);
+                pstmt.setString(2, lastName);
+                pstmt.setString(3, alias);
+                pstmt.setString(4, password);
                 pstmt.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
                 
                 ResultSet rs = pstmt.getGeneratedKeys();
@@ -124,7 +124,7 @@ public class ProjectDBAO {
                 con = getConnection();
                 int userID = addUser(firstName, lastName, alias, password);
                 
-                pstmt = con.prepareStatement("INSERT INTO Patient VALUES(patientID, email)");
+                pstmt = con.prepareStatement("INSERT INTO Patient VALUES(?, ?)");
                 pstmt.setInt(1, userID);
                 pstmt.setString(2, email);
                 pstmt.executeUpdate();
@@ -158,7 +158,7 @@ public class ProjectDBAO {
                 con = getConnection();
                 int userID = addUser(firstName, lastName, alias, password);
                 
-                pstmt = con.prepareStatement("INSERT INTO Doctor VALUES(doctorID, gender, dob, homeAddressID, licenseYear)");
+                pstmt = con.prepareStatement("INSERT INTO Doctor VALUES(?,?,?,?,?)");
                 pstmt.setInt(1, userID);
                 pstmt.setBoolean(2, gender);
                 pstmt.setInt(3, dob);
@@ -188,7 +188,7 @@ public class ProjectDBAO {
                 con = getConnection();
                 int userID = addUser(firstName, lastName, alias, password);
                 
-                pstmt = con.prepareStatement("INSERT INTO Patient VALUES(adminID)");
+                pstmt = con.prepareStatement("INSERT INTO Patient VALUES(?)");
                 pstmt.setInt(1, userID);
                 pstmt.executeUpdate();
             } finally {
