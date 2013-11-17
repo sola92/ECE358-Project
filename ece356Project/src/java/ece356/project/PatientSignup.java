@@ -54,11 +54,11 @@ public class PatientSignup extends HttpServlet {
                 //error
             } else if(!password1.equals(password2)) {
                 //error
-            } else if(ProjectDBAO.queryAlias(alias) > 0) {
+           // } else if(ProjectDBAO.queryAlias(alias) > 0) {
                 //error
             } else {
                 //create user and populate db
-                ProjectDBAO.addPatient(alias);
+               // ProjectDBAO.addPatient(alias);
                 //go to another page
             }
         } finally {            
