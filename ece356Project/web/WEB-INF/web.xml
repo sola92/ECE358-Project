@@ -16,6 +16,14 @@
         <servlet-name>PatientSearchServlet</servlet-name>
         <servlet-class>ece356.PatientSearchServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>FollowPatientServlet</servlet-name>
+        <servlet-class>ece356.FollowPatientServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateReviewServlet</servlet-name>
+        <servlet-class>ece356.CreateReviewServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>/static/*</url-pattern>
@@ -35,6 +43,14 @@
     <servlet-mapping>
         <servlet-name>PatientSearchServlet</servlet-name>
         <url-pattern>/PatientSearch</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FollowPatientServlet</servlet-name>
+        <url-pattern>/FollowPatientServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateReviewServlet</servlet-name>
+        <url-pattern>/CreateReviewServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

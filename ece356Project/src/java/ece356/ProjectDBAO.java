@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -95,6 +96,7 @@ public class ProjectDBAO {
         }
         return isFree;
     }
+
     public static Boolean verifyUserExists(String alias, String password) 
             throws ClassNotFoundException, SQLException {
         Boolean exists = false;
@@ -243,7 +245,7 @@ public class ProjectDBAO {
         try {
             connection = getConnection();
             statement  = connection.prepareStatement("SELECT * FROM Specialization;");
-            ResultSet resultSet = statement.executeQuery(); resultSet.next();
+            ResultSet resultSet = statement.executeQuery(); 
             while(resultSet.next()) {
                 int specID  = resultSet.getInt("specID");
                 String name = resultSet.getString("name");
@@ -255,6 +257,49 @@ public class ProjectDBAO {
         }            
         return specializations;
     }      
+
+    public static int makeReview (
+                int rating, Date reviewDate, String note, int doctorID,
+                int patientID
+            ) throws ClassNotFoundException, SQLException {
+        int reviewID = -1;
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getConnection();
+            statement  = connection.prepareStatement(
+                            "INSERT INTO Review(doctorID, patientID, rating, note, reviewDate) VALUES (?,?,?,?,?)",
+                            Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, doctorID);
+            statement.setInt(2, patientID);
+            statement.setInt(3, rating);
+            statement.setString(4, note);
+            statement.setDate(5, reviewDate);
+            ResultSet resultSet = statement.getGeneratedKeys(); resultSet.next();
+            reviewID = resultSet.getInt(1);  
+        } finally {
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
+        }            
+        return reviewID;
+    }   
+
+    public static void makeFriendship(int followerID, int followeeID) 
+            throws ClassNotFoundException, SQLException {
+        if(followerID == followeeID) throw new IllegalArgumentException("user cannot follow themselves");
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getConnection();
+            statement  = connection.prepareStatement(
+                            "INSERT INTO Review(followerID, followerID) VALUES (?,?)");
+            statement.setInt(1, followerID);
+            statement.setInt(2, followerID);
+        } finally {
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
+        }            
+    }           
     
     public static void addDoctor(String firstName, 
                                   String lastName, 

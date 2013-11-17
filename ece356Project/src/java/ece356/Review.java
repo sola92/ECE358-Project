@@ -30,6 +30,10 @@ public class Review extends Model {
 		return rating;
 	} 
 
+	public Boolean isRecommendation() {
+		return false;
+	} 	
+
 	public String getNote() {
 		return note;
 	}       
