@@ -21,15 +21,23 @@
         </nav>
         <br></br><br></br>
         <div class="row">
+            <% 
+            String errorClass = "";
+            if (request.getAttribute("errorWithLogin") != null) {
+              errorClass = "has-error";
+            }           
+            %>
             <div class="col-md-4 col-md-offset-4">
                 <form role="form" action="LoginServlet" method="POST">
-                  <div class="form-group">
+                  <div class="form-group <%= errorClass %>">
                     <label for="alias">Username</label>
-                    <input type="text" name="alias" class="form-control" id="alias" placeholder="Enter your username">
+                    <input type="text" name="alias" class="form-control" 
+                          id="alias" placeholder="Enter your username" value="${alias}">
                   </div>
-                  <div class="form-group">
+                  <div class="form-group <%= errorClass %>">
                     <label for="password">Password</label>
-                    <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password">
+                    <input type="password" class="form-control" name="password" 
+                           id="password" placeholder="Enter your password" value="${alias}">
                   </div>
                   <button type="submit" class="btn btn-primary">Submit</button>
                   <a class="btn btn-default" href="patientSignUp.jsp">Patient Sign Up</a>

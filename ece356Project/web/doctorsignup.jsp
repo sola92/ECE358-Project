@@ -3,7 +3,9 @@
     Created on : Nov 16, 2013, 5:58:06 PM
     Author     : Sola
 --%>
-
+<%@page import="java.util.List"%>
+<%@page import="ece356.Specialization"%>
+<%@page import="ece356.ProjectDBAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -105,15 +107,14 @@
                   <div class="form-group">
                     <label for="Specialization" class="col-sm-2 control-label">Specialization</label>
                     <div class="col-sm-10">
-                      <% String[] specializations = new String[] {
-                            "Podiatrics", "Nuero", "Dental", "Other"
-                      };
-                      for (int i = 0; i < specializations.length; i++) { %>
+                      <% int j = 1;
+                      for(Specialization spec: ProjectDBAO.getSpecializations()) { %>
                         <label class="checkbox-inline">
-                          <input type="checkbox" name="specialization" id="specialization" value="1">
-                           <%= specializations[i] %>
+                          <input type="checkbox" name="specialization" 
+                                id="specialization" value="<%= spec.getSpecID() %>">
+                           <%= spec.getName() %>
                         </label>         
-                        <% if((i + 1) % 3 == 0) { %> </br> <% } %>                                         
+                        <% if(j++ % 3 == 0) { %> </br> <% } %>                                         
                       <% } %>                                          
                     </div>
                   </div>
@@ -199,6 +200,7 @@
                 </form>           
             </div>  
         </div>
+        <script src="/ece356Project/static/js/jquery-1.10.2.min.js"></script> 
         <script src="static/js/bootstrap.min.js"></script>            
     </body>
 </html>

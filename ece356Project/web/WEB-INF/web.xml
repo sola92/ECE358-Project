@@ -2,15 +2,19 @@
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
     <servlet>
         <servlet-name>CreateDoctorServlet</servlet-name>
-        <servlet-class>CreateDoctorServlet</servlet-class>
+        <servlet-class>ece356.CreateDoctorServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>LoginServlet</servlet-name>
-        <servlet-class>LoginServlet</servlet-class>
+        <servlet-class>ece356.LoginServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>PatientSignupServlet</servlet-name>
-        <servlet-class>PatientSignupServlet</servlet-class>
+        <servlet-class>ece356.PatientSignupServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PatientSearchServlet</servlet-name>
+        <servlet-class>ece356.PatientSearchServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>default</servlet-name>
@@ -27,6 +31,10 @@
     <servlet-mapping>
         <servlet-name>PatientSignupServlet</servlet-name>
         <url-pattern>/PatientSignupServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PatientSearchServlet</servlet-name>
+        <url-pattern>/PatientSearch</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
