@@ -17,7 +17,7 @@
         <nav class="navbar navbar-default" role="navigation">
           <!-- Brand and toggle get grouped for better mobile display -->
           <div class="navbar-header">
-            <a class="navbar-brand" href="#">ECE356 Project</a>
+            <a class="navbar-brand" href="doctorhome.jsp">ECE356 Project</a>
           </div>
         </nav>
         <div class="row">

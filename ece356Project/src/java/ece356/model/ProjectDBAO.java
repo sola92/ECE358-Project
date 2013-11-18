@@ -145,6 +145,43 @@ public class ProjectDBAO {
         return patient;
     } 
 
+    public static List<Patient> getAllPatients() throws ClassNotFoundException, SQLException {
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        ArrayList<Patient> patients = new ArrayList<Patient>();
+        final String QUERY = "SELECT * from Patient JOIN User ON Patient.patientID = User.userID";
+        try {
+            connection = getConnection();
+            statement  = connection.prepareStatement(QUERY);
+            ResultSet result = statement.executeQuery();
+            while(result.next()) patients.add(rowToPatient(result));
+            statement.close();
+
+        } finally {
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
+        }
+        return patients;
+    } 
+
+    public static List<Doctor> getAllDoctors() throws ClassNotFoundException, SQLException {
+        Connection connection       = null;        
+        ArrayList<Doctor> doctors   = new ArrayList<Doctor>();
+        PreparedStatement statement = null;
+        final String QUERY = "SELECT * from Doctor JOIN User ON Doctor.doctorID = User.userID";
+        try {
+            connection = getConnection();
+            statement  = connection.prepareStatement(QUERY);
+            ResultSet result = statement.executeQuery();
+            while(result.next()) doctors.add(rowToDoctor(result));
+            statement.close();
+        } finally {
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
+        }
+        return doctors;
+    }     
+
    public static Patient getPatientByID(String patientID) throws ClassNotFoundException, SQLException {
         Patient patient             = null; 
         Connection connection       = null;
@@ -584,7 +621,7 @@ public class ProjectDBAO {
                     "LEFT OUTER JOIN ( " +
                         "SELECT  " +
                             "doctorID, " +
-                            "addressID   	AS 	workAddressID, " +
+                            "addressID   	AS  workAddressID, " +
                             "streetAddress 	AS  workStreetAddress, " +
                             "postalCode  	AS  workPostalCode, " +
                             "city 	    	AS  workCity, " +

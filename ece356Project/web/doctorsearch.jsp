@@ -84,7 +84,7 @@
                                 <label for="licenseYearStart">Lowest License Year</label>
                                 <select name="licenseYearStart" class="form-control">
                                     <option value="">None</option>
-                                    <% for (int i = 2013; i >= 1950; i--) { %>
+                                    <% for (int i = 1950; i <= 2013; i++) { %>
                                       <option value="<%= i %>"><%= i %></option>
                                     <% } %> 
                                 </select>  
@@ -124,7 +124,7 @@
                                 <br>
                                 <label class="radio-inline">
                                   <input type="radio" name="recommendedByFriend" 
-                                            id="recommendedByFriend" value="" checked> None
+                                            id="recommendedByFriend" value="`    " checked> None
                                 </label>
                                 <label class="radio-inline">
                                   <input type="radio" name="recommendedByFriend" 

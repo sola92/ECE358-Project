@@ -6,6 +6,7 @@
 <%@page import="java.util.List"%>
 <%@page import="ece356.model.Specialization"%>
 <%@page import="ece356.model.ProjectDBAO"%>
+<%@page import="ece356.model.Gender"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -104,10 +105,10 @@
                     <label for="gender" class="col-sm-2 control-label">Gender</label>
                     <div class="col-sm-10">
                       <label class="radio-inline">
-                        <input type="radio" name="gender" id="gender" value="0"> Male
+                          <input type="radio" name="gender" id="gender" value="<%= Gender.Male %>"> Male
                       </label>
                       <label class="radio-inline">
-                        <input type="radio" name="gender" id="gender" value="1"> Female
+                        <input type="radio" name="gender" id="gender" value="<%= Gender.Female %>"> Female
                       </label>                      
                     </div>
                   </div>

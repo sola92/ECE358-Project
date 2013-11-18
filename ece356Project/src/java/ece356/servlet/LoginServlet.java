@@ -15,9 +15,10 @@ import ece356.model.User;
  */
 public class LoginServlet extends HttpServlet {
 
-    final String LOGIN_JSP = "index.jsp";
+    final String LOGIN_JSP        = "index.jsp";
+    final String ADMIN_HOME_JSP   = "adminhome.jsp";
+    final String DOCTOR_HOME_JSP  = "doctorhome.jsp";
     final String PATIENT_HOME_JSP = "patienthome.jsp";
-    final String DOCTOR_HOME_JSP = "doctorhome.jsp";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -44,8 +45,11 @@ public class LoginServlet extends HttpServlet {
                     session.setAttribute("user", u);
                     session.setAttribute("userIsDoctor", true);
                     response.sendRedirect(DOCTOR_HOME_JSP);
-                } else {    //is administrator
-                    
+                } else {    
+                    User u = ProjectDBAO.getAdminByAlias(alias);
+                    session.setAttribute("user", u);
+                    session.setAttribute("userIsAdmin", true);  
+                    response.sendRedirect(ADMIN_HOME_JSP);
                 }
             } else {
                 request.setAttribute("errorWithLogin", true);
@@ -56,7 +60,5 @@ public class LoginServlet extends HttpServlet {
         } catch(Exception e) {
             throw new ServletException(e);
         }        
-        
-        
     }  
 }

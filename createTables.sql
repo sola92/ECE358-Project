@@ -49,3 +49,7 @@ SELECT 	DISTINCT u.*, d.*
         ) ar ON ar.doctorID = d.doctorID 
         LEFT OUTER JOIN DoctorSpecialization s ON s.doctorID = d.doctorID 
         WHERE 1=1 AND u.firstName = 'asdopi';
+
+
+SELECT * FROM User;
+

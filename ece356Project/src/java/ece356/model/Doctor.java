@@ -6,6 +6,7 @@ package ece356.model;
 
 
 import java.util.Date;
+import java.util.List;
 /**
  *
  * @author Sola
@@ -15,15 +16,17 @@ public class Doctor extends User {
 	protected final int  gender;
 	protected final int licenseYear;
 	protected final Address homeAddress;
+	protected List<Address> workAddresses;
 
 	public Doctor(	int userID, String firstName, String lastName, String alias, 
 					String password, Date dob, int gender, int licenseYear,
-					Address homeAddress ) {
+					Address homeAddress) {
 		super(userID, firstName, lastName, alias, password);
-		this.dob         = dob;
-		this.gender      = gender;
-		this.licenseYear = licenseYear;
-		this.homeAddress = homeAddress;		
+		this.dob           = dob;
+		this.gender        = gender;
+		this.licenseYear   = licenseYear;
+		this.homeAddress   = homeAddress;		
+		this.workAddresses = workAddresses;
 	}   
 
 	public Date getDOB() {
@@ -46,4 +49,11 @@ public class Doctor extends User {
 		return homeAddress;
 	}      
 
+	public List<Address> getWorkAddresses() {
+		return workAddresses;
+	}   
+        
+	public void setWorkAddresses(List<Address> addresses) {
+		workAddresses = addresses;
+	}        
 }

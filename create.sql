@@ -18,7 +18,7 @@ CREATE TABLE Address(
 	streetAddress  VARCHAR(100),		
 	postalCode  VARCHAR(20),
 	city 	    VARCHAR(100),
-	province    VARCHAR(100), 
+	province    VARCHAR(100), 	
 	PRIMARY KEY(addressID)
 );
 
