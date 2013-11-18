@@ -28,6 +28,7 @@ CREATE TABLE Patient(
 	patientID INT,
 	PRIMARY KEY (patientID),
 	FOREIGN KEY (patientID) REFERENCES User(userID)
+		ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS Administrator;
@@ -35,6 +36,7 @@ CREATE TABLE Administrator(
 	adminID INT,
 	PRIMARY KEY (adminID),
 	FOREIGN KEY (adminID) REFERENCES User(userID)
+		ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS Specialization;
@@ -54,6 +56,7 @@ CREATE TABLE Doctor(
     PRIMARY KEY (doctorID),
     FOREIGN KEY (homeAddressID) REFERENCES Address(addressID),
     FOREIGN KEY (doctorID)  	REFERENCES User(userID)
+    	ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS WorkAddresses;
@@ -61,8 +64,10 @@ CREATE TABLE WorkAddresses(
 	doctorID  INT,
 	addressID INT,
 	PRIMARY KEY (doctorID, addressID),
-	FOREIGN KEY (doctorID)  REFERENCES Doctor(doctorID),
+	FOREIGN KEY (doctorID)  REFERENCES Doctor(doctorID)
+		ON DELETE CASCADE,
 	FOREIGN KEY (addressID) REFERENCES Address(addressID)
+		ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS DoctorSpecialization;
@@ -70,8 +75,10 @@ CREATE TABLE DoctorSpecialization(
 	doctorID INT,
 	specID   INT,
 	PRIMARY KEY (doctorID, specID),
-	FOREIGN KEY (doctorID) REFERENCES Doctor(doctorID),
+	FOREIGN KEY (doctorID) REFERENCES Doctor(doctorID)
+		ON DELETE CASCADE,
 	FOREIGN KEY (specID)   REFERENCES Specialization(specID)	
+		ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS Review;
@@ -83,8 +90,10 @@ CREATE TABLE Review(
 	note       VARCHAR(200),
 	reviewDate DATE,
 	PRIMARY KEY (reviewID),
-	FOREIGN KEY (doctorID)  REFERENCES Doctor (doctorID),
+	FOREIGN KEY (doctorID)  REFERENCES Doctor (doctorID)
+		ON DELETE CASCADE,
 	FOREIGN KEY (patientID) REFERENCES Patient(patientID)
+		ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS Likes;
@@ -102,8 +111,10 @@ CREATE TABLE Friendship(
 	followerID INT,
 	followeeID INT,
 	PRIMARY KEY (followerID, followeeID),
-	FOREIGN KEY (followerID) REFERENCES Patient(patientID),
-	FOREIGN KEY (followeeID) REFERENCES Patient(patientID)	
+	FOREIGN KEY (followerID) REFERENCES Patient(patientID)
+		ON DELETE CASCADE,
+	FOREIGN KEY (followeeID) REFERENCES Patient(patientID)
+		ON DELETE CASCADE	
 );
 
 INSERT INTO Specialization(name) VALUES ('Anesthesiologists');

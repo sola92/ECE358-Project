@@ -37,6 +37,7 @@ public class PatientSearchServlet extends HttpServlet {
         HttpSession session = request.getSession(true);
         if(session.getAttribute("user") == null) {
             response.sendRedirect(LOGIN_JSP);
+            return;
         }        
         try {
             String alias = request.getParameter("query");

@@ -40,6 +40,14 @@
         <servlet-name>RateDoctorServlet</servlet-name>
         <servlet-class>ece356.servlet.RateDoctorServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SearchReviewServlet</servlet-name>
+        <servlet-class>ece356.servlet.SearchReviewServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteReviewServlet</servlet-name>
+        <servlet-class>ece356.servlet.DeleteReviewServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>/static/*</url-pattern>
@@ -83,6 +91,14 @@
     <servlet-mapping>
         <servlet-name>RateDoctorServlet</servlet-name>
         <url-pattern>/RateDoctorServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchReviewServlet</servlet-name>
+        <url-pattern>/SearchReview</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteReviewServlet</servlet-name>
+        <url-pattern>/DeleteReview</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
