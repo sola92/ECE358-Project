@@ -419,16 +419,16 @@ public class ProjectDBAO {
         final String QUERY = "SELECT * FROM Address WHERE addressID = ?";
         try {
             connection = getConnection();
-            statement = connection.prepareStatement(QUERY);
+            statement = connection.prepareStatement(QUERY, Statement.RETURN_GENERATED_KEYS);
             statement.setInt(1, aid);
-            statement.executeQuery();
-            ResultSet rs = statement.getGeneratedKeys(); rs.next();
+            
+            ResultSet rs = statement.executeQuery(); rs.next();
             String city         = rs.getString("city");
             int    addressID    = rs.getInt("addressID");
             String province     = rs.getString("province");        
-            String streetName   = rs.getString("streetName");
+            String streetAddress   = rs.getString("streetAddress");
             String postalCode   = rs.getString("postalCode");                
-            address = new Address(addressID, streetName, postalCode, city, province);
+            address = new Address(addressID, streetAddress, postalCode, city, province);
         } finally {
             if (statement  != null) statement.close();
             if (connection != null) connection.close();
@@ -445,24 +445,30 @@ public class ProjectDBAO {
             connection = getConnection();
             statement  = connection.prepareStatement(QUERY);
             statement.setString(1, _alias);
+//            statement.executeQuery();
             ResultSet result = statement.executeQuery();
-            Date dob         = result.getDate  ("dob");
-            int gender       = result.getInt   ("gender");            
-            int userID       = result.getInt   ("userID");
-            String email     = result.getString("email");
-            String alias     = result.getString("alias");
-            String lastName  = result.getString("lastName");
-            String password  = result.getString("password");
-            String firstName = result.getString("firstName");
-            Date licenseYear = result.getDate  ("gender");
-            Address homeAddress = getAddress(result.getInt("addressID"));           
-            doctor = new Doctor(userID, firstName, lastName, alias, 
-                                password, dob, gender, licenseYear, homeAddress);    
+//            result.next();
+            if (result.next()) {
+                Date dob         = result.getDate  ("dob");
+                int gender       = result.getInt   ("gender");            
+                int userID       = result.getInt   ("userID");
+                String alias     = result.getString("alias");
+                String lastName  = result.getString("lastName");
+                String password  = result.getString("password");
+                String firstName = result.getString("firstName");
+                int licenseYear  = result.getInt   ("licenseYear");
+                Address homeAddress = getAddress(result.getInt("homeAddressID"));           
+                doctor = new Doctor(userID, firstName, lastName, alias, 
+                                    password, dob, gender, licenseYear, homeAddress);
+                return doctor;
+            } else {
+                return null;
+            }
+               
         } finally {
             if (statement  != null) statement.close();
             if (connection != null) connection.close();
         }
-        return doctor;
     }
 
     public static int makeAddress(String streetAddress, String postalCode, String city, String province) 

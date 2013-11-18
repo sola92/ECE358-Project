@@ -9,7 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import ece356.model.ProjectDBAO;
+import ece356.model.User;
 import java.sql.Date;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -17,7 +19,8 @@ import java.sql.Date;
  */
 @WebServlet(name = "CreateDoctorServlet", urlPatterns = {"/CreateDoctorServlet"})
 public class CreateDoctorServlet extends HttpServlet {
-
+    final String DOCTOR_HOME_JSP = "doctorhome.jsp";
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -63,6 +66,12 @@ public class CreateDoctorServlet extends HttpServlet {
             Date dob = Date.valueOf(dobYear + "-" + dobMonth + "-" + dobDay);
             ProjectDBAO.makeDoctor( firstName, lastName, alias, password, gender, 
                                     dob, homeAddressID, licenseYear, specs );
+            
+            HttpSession session = request.getSession(true);
+            User u = ProjectDBAO.getDoctorByAlias(alias);
+            session.setAttribute("user", u);
+            session.setAttribute("userIsDoctor", true);
+            response.sendRedirect(DOCTOR_HOME_JSP);
         } catch (Exception ex) {
             throw new ServletException(ex);
         }
