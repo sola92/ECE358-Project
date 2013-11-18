@@ -23,46 +23,92 @@
           </div>
         </nav>
         <div class="row">
+            <% 
+            String firstNameError = "";
+            if (request.getAttribute("errorWithFirstName") != null) {
+              firstNameError = "has-error";
+            }  
+            String lastNameError = "";
+            if (request.getAttribute("errorWithLastName") != null) {
+              lastNameError = "has-error";
+            }  
+            String aliasError = "";
+            if (request.getAttribute("errorWithAlias") != null) {
+              aliasError = "has-error";
+            } 
+            String emailError = "";
+            if (request.getAttribute("errorWithEmail") != null) {
+              emailError = "has-error";
+            }
+            String homeAddressError = "";
+            if (request.getAttribute("errorWithHomeAddress") != null) {
+              homeAddressError = "has-error";
+            }
+            String workAddressError = "";
+            if (request.getAttribute("errorWithWorkAddress") != null) {
+              workAddressError = "has-error";
+            }
+            String passwordError = "";
+            if (request.getAttribute("errorWithPassword") != null) {
+              passwordError = "has-error";
+            }
+            String genderError = "";
+            if (request.getAttribute("errorWithGender") != null) {
+              genderError = "has-error";
+            }
+            String licenseError = "";
+            if (request.getAttribute("errorWithLicense") != null) {
+              licenseError = "has-error";
+            }
+            String specsError = "";
+            if (request.getAttribute("errorWithSpecs") != null) {
+              specsError = "has-error";
+            }
+            String dobError = "";
+            if (request.getAttribute("errorWithDob") != null) {
+              dobError = "has-error";
+            }            
+            %>
             <div class="col-md-6 col-md-offset-3">
                 <h3 style="text-align:center;">Create Doctor Account</h3>
                 <br></br>
                 <form class="form-horizontal" action="CreateDoctorServlet" method="POST" role="form">
-                  <div class="form-group">
+                  <div class="form-group <%= aliasError %>">
                     <label for="alias" class="col-sm-2 control-label">Username</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" name="alias" 
                             id="alias" placeholder="Enter a username">
                     </div>
                   </div>                  
-                  <div class="form-group">
+                  <div class="form-group <%= firstNameError %>">
                     <label for="firstName" class="col-sm-2 control-label">First Name</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" name="firstName" 
                             id="firstName" placeholder="Enter your first name">
                     </div>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group <%= lastNameError %>">
                     <label for="lastName" class="col-sm-2 control-label">Last Name</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" name="lastName" 
                             id="lastName" placeholder="Enter your last name">
                     </div>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group <%= passwordError %>">
                     <label for="password" class="col-sm-2 control-label">Password</label>
                     <div class="col-sm-10">
                       <input type="password" class="form-control" name="password" 
                             id="password" placeholder="Password">
                     </div>
                   </div>         
-                  <div class="form-group">
+                  <div class="form-group <%= passwordError %>">
                     <label for="extraPassword" class="col-sm-2 control-label">Re-Enter Password</label>
                     <div class="col-sm-10">
                       <input type="password" class="form-control" name="extraPassword" 
                             id="extraPassword" placeholder="Re-enter Password">
                     </div>
                   </div>                           
-                  <div class="form-group">
+                  <div class="form-group <%= dobError %>">
                     <label for="Specialization" class="col-sm-2 control-label">Date of Birth</label>
                     <div class="col-sm-10">
                       <div class="row">
@@ -101,18 +147,18 @@
                       </div>                                                               
                     </div>
                   </div>                   
-                  <div class="form-group">
+                  <div class="form-group <%= genderError %>">
                     <label for="gender" class="col-sm-2 control-label">Gender</label>
                     <div class="col-sm-10">
                       <label class="radio-inline">
-                          <input type="radio" name="gender" id="gender" value="<%= Gender.Male %>"> Male
+                          <input type="radio" name="gender" id="gender" value="<%= Gender.Male %>" checked> Male
                       </label>
                       <label class="radio-inline">
                         <input type="radio" name="gender" id="gender" value="<%= Gender.Female %>"> Female
                       </label>                      
                     </div>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group <%= specsError %>">
                     <label for="Specialization" class="col-sm-2 control-label">Specialization</label>
                     <div class="col-sm-10">
                       <% int j = 1;
@@ -126,7 +172,7 @@
                       <% } %>                                          
                     </div>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group <%= licenseError %>">
                     <label for="Specialization" class="col-sm-2 control-label">Year of License</label>
                     <div class="col-sm-10">
                       <div class="row">
@@ -142,28 +188,28 @@
                   </div>                                      
                   </br>                
                   <h4>Work Address</h4>
-                  <div class="form-group">
+                  <div class="form-group <%= workAddressError %>">
                     <label for="workStreetAddress" class="col-sm-2 control-label">Street Address</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" name="workStreetAddress" 
                             id="workStreetAddress" placeholder="Enter your street address">
                     </div>
                   </div>               
-                  <div class="form-group">
+                  <div class="form-group <%= workAddressError %>">
                     <label for="workCity" class="col-sm-2 control-label">City</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" name="workCity" 
                             id="workCity" placeholder="Enter your city">
                     </div>
                   </div>   
-                  <div class="form-group">
+                  <div class="form-group <%= workAddressError %>">
                     <label for="workPostalCode" class="col-sm-2 control-label">Postal Code</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" name="workPostalCode" 
                             id="workPostalCode" placeholder="Enter your postal code">
                     </div>                                       
                   </div>   
-                  <div class="form-group">
+                  <div class="form-group <%= workAddressError %>">
                     <label for="workProvince" class="col-sm-2 control-label">Province</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" name="workProvince" 
@@ -172,28 +218,28 @@
                   </div>  
                   </br>
                   <h4>Home Address</h4>
-                  <div class="form-group">
+                  <div class="form-group <%= homeAddressError %>">
                     <label for="homeStreetAddress" class="col-sm-2 control-label">Street Address</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" name="homeStreetAddress" 
                             id="homeStreetAddress" placeholder="Enter your street address">
                     </div>
                   </div>               
-                  <div class="form-group">
+                  <div class="form-group <%= homeAddressError %>">
                     <label for="homeCity" class="col-sm-2 control-label">City</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" name="homeCity" 
                             id="homeCity" placeholder="Enter your city">
                     </div>
                   </div>   
-                  <div class="form-group">
+                  <div class="form-group <%= homeAddressError %>">
                     <label for="homePostalCode" class="col-sm-2 control-label">Postal Code</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" name="homePostalCode"
                             id="homePostalCode" placeholder="Enter your postal code">
                     </div>                                       
                   </div>   
-                  <div class="form-group">
+                  <div class="form-group <%= homeAddressError %>">
                     <label for="homeProvince" class="col-sm-2 control-label">Province</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" name="homeProvince"
