@@ -46,12 +46,18 @@
           </div>
         </nav>
         <div class="row">
+            <% 
+            String commentError = "";
+            if (request.getAttribute("errorWithComment") != null) {
+              commentError = "has-error";
+            }        
+            %>
             <div class="col-md-6 col-md-offset-3">
                 <h3 style="text-align:center;">Rate Doctor <%=d.getFullName()%></h3>
                 <br></br>              
                 <form class="form-horizontal" role="form" action="RateDoctorServlet" method="POST">
                   <input type="hidden" name="doctorID" value="<%= d.getDoctorID() %>" />
-                  <div class="form-group">
+                  <div class="form-group <%= commentError %>">
                     <label for="note" class="col-sm-2 control-label">Comment</label>
                     <div class="col-sm-10">
                         <textarea name="note" cols="50" rows="5">
