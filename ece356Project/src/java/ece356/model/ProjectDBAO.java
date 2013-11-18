@@ -69,6 +69,17 @@ public class ProjectDBAO {
         return new Address(addressID, streetAddress, postalCode, city, province);    
     } 
     
+    private static Review rowToReview(ResultSet result) 
+        throws ClassNotFoundException, SQLException {
+        int rating           = result.getInt("rating");
+        int reviewID           = result.getInt("reviewID");
+        Date reviewDate       = result.getDate("reviewDate");
+        String note       = result.getString("note");
+        Doctor doctor             = getDoctorByID(result.getInt("doctorID"));
+        Patient patient         = getPatientByID(result.getInt("patientID"));
+        return new Review(rating, reviewID, reviewDate, note, doctor, patient);    
+    } 
+    
     private static Connection getConnection()
             throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
@@ -145,7 +156,7 @@ public class ProjectDBAO {
         return patient;
     } 
 
-   public static Patient getPatientByID(String patientID) throws ClassNotFoundException, SQLException {
+   public static Patient getPatientByID(int patientID) throws ClassNotFoundException, SQLException {
         Patient patient             = null; 
         Connection connection       = null;
         PreparedStatement statement = null;
@@ -153,7 +164,7 @@ public class ProjectDBAO {
         try {
              connection = getConnection();
              statement  = connection.prepareStatement(QUERY);
-             statement.setString(1, patientID);
+             statement.setInt(1, patientID);
              ResultSet result = statement.executeQuery();
              result.next();
              patient = rowToPatient(result);
@@ -333,31 +344,54 @@ public class ProjectDBAO {
         return specializations;
     }      
 
-    public static int makeReview (
-                int rating, Date reviewDate, String note, int doctorID,
+    public static void makeReview (
+                double rating, String note, int doctorID,
                 int patientID
             ) throws ClassNotFoundException, SQLException {
-        int reviewID = -1;
+        
         Connection connection       = null;
         PreparedStatement statement = null;
         try {
             connection = getConnection();
             statement  = connection.prepareStatement(
-                            "INSERT INTO Review(doctorID, patientID, rating, note, reviewDate) VALUES (?,?,?,?,?)",
-                            Statement.RETURN_GENERATED_KEYS);
+                            "INSERT INTO Review(doctorID, patientID, rating, note, reviewDate) VALUES (?,?,?,?,CURDATE())");
             statement.setInt(1, doctorID);
             statement.setInt(2, patientID);
-            statement.setInt(3, rating);
+            statement.setDouble(3, rating);
             statement.setString(4, note);
-            statement.setDate(5, reviewDate);
-            ResultSet resultSet = statement.getGeneratedKeys(); resultSet.next();
-            reviewID = resultSet.getInt(1);  
+            statement.executeUpdate(); 
+            
         } finally {
             if (statement  != null) statement.close();
             if (connection != null) connection.close();
         }            
-        return reviewID;
+        
     }   
+    
+    public static List<Review> getReviewsByDoctorID(int doctorID) 
+            throws ClassNotFoundException, SQLException {
+        ArrayList<Review> reviewArray = new ArrayList<Review>();
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        final String QUERY = "SELECT * FROM Review WHERE doctorID = ? ORDER BY reviewDate DESC;";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(QUERY);
+            statement.setInt(1, doctorID);
+            
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()) {               
+                reviewArray.add(rowToReview(rs));
+            }
+            
+        } finally {
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
+        }
+        return reviewArray;
+    }
+    
+    
 
     public static void makeFriendship(int followerID, int followeeID) 
             throws ClassNotFoundException, SQLException {
@@ -403,14 +437,14 @@ public class ProjectDBAO {
         return userID;   
     }
 
-    public static Doctor getDoctorByID(String doctorID) throws ClassNotFoundException, SQLException {
+    public static Doctor getDoctorByID(int doctorID) throws ClassNotFoundException, SQLException {
         Doctor doctor               = null; 
         Connection connection       = null;
         PreparedStatement statement = null;
         try {
             connection = getConnection();
             statement  = connection.prepareStatement("SELECT * from Doctor JOIN User ON Doctor.doctorID = User.userID WHERE doctorID = ?");
-            statement.setString(1, doctorID);
+            statement.setInt(1, doctorID);
             ResultSet result = statement.executeQuery();
             result.next();
             doctor = rowToDoctor(result);

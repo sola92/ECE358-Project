@@ -36,6 +36,10 @@ public abstract class User extends Model {
 		return lastName;
 	}
 
+        public String getFullName() {
+		return getFirstName() + " " + getLastName();
+	}
+                
 	public String getAlias() {
 		return alias;
 	}

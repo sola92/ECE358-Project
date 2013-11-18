@@ -9,7 +9,7 @@ import java.util.Date;
  */
 public class Review extends Model {
 	
-	protected final int 	rating; 
+	protected final double 	rating; 
 	protected final int 	reviewID;
 	protected final Date 	reviewDate; 	
 	protected final String 	note;       
@@ -26,7 +26,7 @@ public class Review extends Model {
 		this.reviewDate = reviewDate; 	
 	}  
 
-	public int getRating() {
+	public double getRating() {
 		return rating;
 	} 
 
