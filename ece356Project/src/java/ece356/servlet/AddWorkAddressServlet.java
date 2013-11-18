@@ -30,6 +30,7 @@ public class AddWorkAddressServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    final String ADD_WORK_ADDRESS_JSP = "addworkaddress.jsp";
     final String DOCTOR_HOME_JSP = "doctorhome.jsp";
     final String LOGIN_JSP = "index.jsp";
     
@@ -86,12 +87,33 @@ public class AddWorkAddressServlet extends HttpServlet {
         String workStreetAddress = request.getParameter("workStreetAddress");
         
         try {
-            int workAddressID = ProjectDBAO.makeAddress(workStreetAddress, workPostalCode, workCity, workProvince);
-            int[] workAddressArray = {workAddressID};
-            ProjectDBAO.addWorkAddresses(u.getUserID(), workAddressArray);
-            session.setAttribute("user", u);
-            session.setAttribute("userIsDoctor", true);
-            response.sendRedirect(DOCTOR_HOME_JSP);
+            boolean hasError = false;
+            if (workCity          == null || workCity.isEmpty()) {
+                request.setAttribute("errorWithWorkAddress", true);
+                hasError = true;
+            }
+            if (workProvince      == null || workProvince.isEmpty()) {
+                request.setAttribute("errorWithWorkAddress", true);
+                hasError = true;
+            }
+            if (workPostalCode    == null || workPostalCode.isEmpty()) {
+                request.setAttribute("errorWithWorkAddress", true);
+                hasError = true;
+            }
+            if (workStreetAddress == null || workStreetAddress.isEmpty()) {
+                request.setAttribute("errorWithWorkAddress", true);
+                hasError = true;
+            }
+            if (hasError) {
+                request.getRequestDispatcher(ADD_WORK_ADDRESS_JSP).forward(request, response);
+            } else {
+                int workAddressID = ProjectDBAO.makeAddress(workStreetAddress, workPostalCode, workCity, workProvince);
+                int[] workAddressArray = {workAddressID};
+                ProjectDBAO.addWorkAddresses(u.getUserID(), workAddressArray);
+                session.setAttribute("user", u);
+                session.setAttribute("userIsDoctor", true);
+                response.sendRedirect(DOCTOR_HOME_JSP);
+            }
         } catch(Exception e) {
             throw new ServletException(e);
         }        

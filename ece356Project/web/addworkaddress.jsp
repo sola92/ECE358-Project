@@ -21,33 +21,39 @@
           </div>
         </nav>
         <div class="row">
+            <% 
+            String workAddressError = "";
+            if (request.getAttribute("errorWithWorkAddress") != null) {
+              workAddressError = "has-error";
+            }           
+            %>
             <div class="col-md-6 col-md-offset-3">
                 <h3 style="text-align:center;">Create Doctor Account</h3>
                 <br></br>
                 <form class="form-horizontal" action="AddWorkAddressServlet" method="POST" role="form">
                   <h4>Work Address</h4>
-                  <div class="form-group">
+                  <div class="form-group <%= workAddressError %>">
                     <label for="workStreetAddress" class="col-sm-2 control-label">Street Address</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" name="workStreetAddress" 
                             id="workStreetAddress" placeholder="Enter your street address">
                     </div>
                   </div>               
-                  <div class="form-group">
+                  <div class="form-group <%= workAddressError %>">
                     <label for="workCity" class="col-sm-2 control-label">City</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" name="workCity" 
                             id="workCity" placeholder="Enter your city">
                     </div>
                   </div>   
-                  <div class="form-group">
+                  <div class="form-group <%= workAddressError %>">
                     <label for="workPostalCode" class="col-sm-2 control-label">Postal Code</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" name="workPostalCode" 
                             id="workPostalCode" placeholder="Enter your postal code">
                     </div>                                       
                   </div>   
-                  <div class="form-group">
+                  <div class="form-group <%= workAddressError %>">
                     <label for="workProvince" class="col-sm-2 control-label">Province</label>
                     <div class="col-sm-10">
                       <input type="text" class="form-control" name="workProvince" 
