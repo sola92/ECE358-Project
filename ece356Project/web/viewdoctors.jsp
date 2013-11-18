@@ -65,7 +65,7 @@
                                     </p>                                    
                                 </td>
                                 <td>
-                                    <% for(Address wa: d.getWorkAddresses()) { %>
+                                    <% for(Address wa: ProjectDBAO.getWorkAddressByDoctorID(d.getDoctorID())) { %>
                                         <p>
                                             <%= wa.getStreetName() %>
                                             <br/>

@@ -101,6 +101,7 @@ public class ProjectDBAO {
         Connection connection       = null;
         PreparedStatement statement = null;        
         String query = "SELECT COUNT(*) FROM User WHERE alias = ? ";
+        alias = alias.toLowerCase();
         try {
             connection   = getConnection();
             statement    = connection.prepareStatement(query);
@@ -137,6 +138,7 @@ public class ProjectDBAO {
         Patient patient             = null; 
         Connection connection       = null;
         PreparedStatement statement = null;
+        _alias = _alias.toLowerCase();
         try {
             connection = getConnection();
             statement  = connection.prepareStatement("SELECT * from Patient JOIN User ON Patient.patientID = User.userID WHERE alias = ?");
@@ -215,6 +217,7 @@ public class ProjectDBAO {
         Administrator administrator = null; 
         Connection connection       = null;
         PreparedStatement statement = null;
+        _alias = _alias.toLowerCase();
         try {
             connection = getConnection();
             statement  = connection.prepareStatement("SELECT * from Administrator JOIN User ON Administrator.adminID = User.userID WHERE alias = ?");
@@ -235,6 +238,7 @@ public class ProjectDBAO {
             throws ClassNotFoundException, SQLException {
         ArrayList<Patient> patients = new ArrayList<Patient>();
         if(alias == null || alias.trim() == "") return patients;
+        alias = alias.toLowerCase();
         Connection connection       = null;
         PreparedStatement statement = null;        
         final String query = "SELECT * " +
@@ -263,6 +267,7 @@ public class ProjectDBAO {
         Boolean isPatient           = false; 
         Connection connection       = null;
         PreparedStatement statement = null;
+        _alias = _alias.toLowerCase();
         try {
             connection = getConnection();
             statement = connection.prepareStatement("SELECT COUNT(*) FROM Patient JOIN User ON Patient.patientID = User.userID WHERE alias = ?");
@@ -282,6 +287,7 @@ public class ProjectDBAO {
         Boolean isDoctor           = false; 
         Connection connection       = null;
         PreparedStatement statement = null;
+        _alias = _alias.toLowerCase();
         try {
             connection = getConnection();
             statement = connection.prepareStatement("SELECT COUNT(*) FROM Doctor JOIN User ON Doctor.doctorID = User.userID WHERE alias = ?");
@@ -302,7 +308,8 @@ public class ProjectDBAO {
         Connection connection       = null;
         PreparedStatement statement = null;  
         int userID = 0;                
-        connection   = getConnection(); 
+        connection   = getConnection();
+        alias = alias.toLowerCase();        
         try {
             String query = "INSERT INTO User(firstName, lastName, alias, password) VALUES(?,?,?,?)";
             statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -490,7 +497,7 @@ public class ProjectDBAO {
         int userID                  = -1;
         Connection connection       = null;
         PreparedStatement statement = null;
-        final String QUERY = "INSERT INTO Doctor(doctorID, gender, dob, homeAddressID, licenseYear) VALUES(?,?,?,?,?)";       
+        final String QUERY = "INSERT INTO Doctor(doctorID, gender, dob, homeAddressID, licenseYear) VALUES(?,?,?,?,?)";
         try {
             userID      = makeUser(firstName, lastName, alias, password);
             connection  = getConnection();
@@ -623,6 +630,7 @@ public class ProjectDBAO {
         Connection connection       = null;
         PreparedStatement statement = null;
         final String QUERY = "SELECT * from Doctor JOIN User ON Doctor.doctorID = User.userID WHERE alias = ?";
+        _alias = _alias.toLowerCase();
         try {
             connection = getConnection();
             statement  = connection.prepareStatement(QUERY);
