@@ -58,6 +58,17 @@ public class ProjectDBAO {
                     homeAddress);    
     }    
     
+            
+    private static Address rowToAddress(ResultSet result) 
+        throws ClassNotFoundException, SQLException {
+        int addressID           = result.getInt("addressID");
+        String streetAddress       = result.getString("streetAddress");
+        String postalCode       = result.getString("postalCode");
+        String city             = result.getString("city");
+        String province         = result.getString("province");
+        return new Address(addressID, streetAddress, postalCode, city, province);    
+    } 
+    
     private static Connection getConnection()
             throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
@@ -476,6 +487,29 @@ public class ProjectDBAO {
             if (connection != null) connection.close();
         }
         return address;
+    }
+    
+    public static List<Address> getWorkAddressByDoctorID(int doctorID) 
+            throws ClassNotFoundException, SQLException {
+        ArrayList<Address> addressArray = new ArrayList<Address>();
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        final String QUERY = "SELECT * FROM Address NATURAL JOIN WorkAddresses WHERE doctorID = ?";
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement(QUERY);
+            statement.setInt(1, doctorID);
+            
+            ResultSet rs = statement.executeQuery();
+            while(rs.next()) {               
+                addressArray.add(rowToAddress(rs));
+            }
+            
+        } finally {
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
+        }
+        return addressArray;
     }
 
     public static Doctor getDoctorByAlias(String _alias) throws ClassNotFoundException, SQLException {

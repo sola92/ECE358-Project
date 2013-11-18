@@ -62,10 +62,14 @@ public class CreateDoctorServlet extends HttpServlet {
         Integer dobYear   = Integer.parseInt(request.getParameter("dobYear"));                                                                                                                  
         Integer dobMonth  = Integer.parseInt(request.getParameter("dobMonth"));        
         try {
-            int homeAddressID = ProjectDBAO.makeAddress(homeCity, homePostalCode, homeCity, homeProvince); 
+            int homeAddressID = ProjectDBAO.makeAddress(homeStreetAddress, homePostalCode, homeCity, homeProvince); 
+            
             Date dob = Date.valueOf(dobYear + "-" + dobMonth + "-" + dobDay);
-            ProjectDBAO.makeDoctor( firstName, lastName, alias, password, gender, 
+            int doctorID = ProjectDBAO.makeDoctor( firstName, lastName, alias, password, gender, 
                                     dob, homeAddressID, licenseYear, specs );
+            int workAddressID = ProjectDBAO.makeAddress(workStreetAddress, workPostalCode, workCity, workProvince);
+            int[] workAddressArray = {workAddressID};
+            ProjectDBAO.addWorkAddresses(doctorID, workAddressArray);
             
             HttpSession session = request.getSession(true);
             User u = ProjectDBAO.getDoctorByAlias(alias);

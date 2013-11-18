@@ -106,6 +106,61 @@ CREATE TABLE Friendship(
 	FOREIGN KEY (followeeID) REFERENCES Patient(patientID)	
 );
 
+INSERT INTO Specialization(name) VALUES ('Anesthesiologists');
+INSERT INTO Specialization(name) VALUES ('Cardiologists');
+INSERT INTO Specialization(name) VALUES ('Coroners');
+INSERT INTO Specialization(name) VALUES ('Dentists');
+INSERT INTO Specialization(name) VALUES ('Dermatologists');
+INSERT INTO Specialization(name) VALUES ('Diabetologists');
+INSERT INTO Specialization(name) VALUES ('Emergency physicians');
+INSERT INTO Specialization(name) VALUES ('Endocrinologists');
+INSERT INTO Specialization(name) VALUES ('Euthanasia doctors');
+INSERT INTO Specialization(name) VALUES ('General Practitioners');
+INSERT INTO Specialization(name) VALUES ('Physicians');
+INSERT INTO Specialization(name) VALUES ('Physicians');
+INSERT INTO Specialization(name) VALUES ('Surgeons of Glasgow');
+INSERT INTO Specialization(name) VALUES ('Physicians of Edinburgh');
+INSERT INTO Specialization(name) VALUES ('Surgeons of Edinburgh');
+INSERT INTO Specialization(name) VALUES ('Gastroenterologists');
+INSERT INTO Specialization(name) VALUES ('General practitioners');
+INSERT INTO Specialization(name) VALUES ('Gynaecologists');
+INSERT INTO Specialization(name) VALUES ('Hematologists');
+-- INSERT INTO Specialization(name) VALUES ('High-altitude medicine physicians???');
+-- INSERT INTO Specialization(name) VALUES ('Hygienists??? ');
+-- INSERT INTO Specialization(name) VALUES ('Immunologists??? ');
+-- INSERT INTO Specialization(name) VALUES ('Internists??? ');
+-- INSERT INTO Specialization(name) VALUES ('Leprologists??? ');
+-- INSERT INTO Specialization(name) VALUES ('Military physicians??? ');
+-- INSERT INTO Specialization(name) VALUES ('Nephrologists???');
+-- INSERT INTO Specialization(name) VALUES ('Neurologists??? ');
+-- INSERT INTO Specialization(name) VALUES ('Neurosurgeons???');
+-- INSERT INTO Specialization(name) VALUES ('Nuclear medicine physicians??? ');
+-- INSERT INTO Specialization(name) VALUES ('Obstetricians???');
+-- INSERT INTO Specialization(name) VALUES ('Oncologists??? ');
+-- INSERT INTO Specialization(name) VALUES ('Ophthalmologists???');
+-- INSERT INTO Specialization(name) VALUES ('Orthopaedists??? ');
+-- INSERT INTO Specialization(name) VALUES ('Osteopathic physicians???');
+-- INSERT INTO Specialization(name) VALUES ('Otolaryngologists??? ');
+-- INSERT INTO Specialization(name) VALUES ('Paleopathologists??? ');
+-- INSERT INTO Specialization(name) VALUES ('Parasitologists???');
+-- INSERT INTO Specialization(name) VALUES ('Pathologists??? ');
+-- INSERT INTO Specialization(name) VALUES ('Pediatricians??? ');
+-- INSERT INTO Specialization(name) VALUES ('Phthisiatrists???');
+-- INSERT INTO Specialization(name) VALUES ('Podiatrists??? ');
+-- INSERT INTO Specialization(name) VALUES ('Psychiatrists??? ');
+-- INSERT INTO Specialization(name) VALUES ('Pulmonologists???');
+-- INSERT INTO Specialization(name) VALUES ('Radiologists??? ');
+-- INSERT INTO Specialization(name) VALUES ('Rheumatologists??? ');
+-- INSERT INTO Specialization(name) VALUES ('Serologists???');
+-- INSERT INTO Specialization(name) VALUES ('Surgeons??? ');
+-- INSERT INTO Specialization(name) VALUES ('Team physicians???');
+-- INSERT INTO Specialization(name) VALUES ('Toxicologists??? ');
+-- INSERT INTO Specialization(name) VALUES ('Traumatologists???');
+-- INSERT INTO Specialization(name) VALUES ('Tropical physicians??? ');
+-- INSERT INTO Specialization(name) VALUES ('Urologists');
+-- INSERT INTO Specialization(name) VALUES ('Venereologists???');
+
+
 
 SELECT 	DISTINCT u.*, d.*
         FROM Doctor AS d
@@ -130,4 +185,5 @@ SELECT 	DISTINCT u.*, d.*
         ) ar ON ar.doctorID = d.doctorID 
         LEFT OUTER JOIN DoctorSpecialization s ON s.doctorID = d.doctorID 
         WHERE 1=1 AND u.firstName = 'asdopi';
+
 
