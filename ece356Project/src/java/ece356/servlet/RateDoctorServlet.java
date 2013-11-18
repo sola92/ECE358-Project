@@ -84,10 +84,19 @@ public class RateDoctorServlet extends HttpServlet {
         int doctorID    = Integer.parseInt(request.getParameter("doctorID"));
                
         try {
-            session.setAttribute("user", u);
-            session.setAttribute("userIsPatient", true);
-            ProjectDBAO.makeReview (rating, note, doctorID,u.getUserID());
-            response.sendRedirect("fullReview.jsp?doctorID="+doctorID);
+            boolean hasError = false;
+            if (note == null || note.isEmpty()) {
+                request.setAttribute("errorWithComment", true);
+                hasError = true;
+            }
+            if (hasError) {
+                request.getRequestDispatcher("rateDoctor.jsp?doctorID="+doctorID).forward(request, response);
+            } else {
+                session.setAttribute("user", u);
+                session.setAttribute("userIsPatient", true);
+                ProjectDBAO.makeReview (rating, note, doctorID,u.getUserID());
+                response.sendRedirect("fullReview.jsp?doctorID="+doctorID);
+            }
         } catch (Exception ex) {
             throw new ServletException(ex);
         }
