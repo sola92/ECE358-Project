@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import ece356.model.ProjectDBAO;
 import ece356.model.User;
+import java.sql.Connection;
 import java.sql.Date;
 import javax.servlet.http.HttpSession;
 
@@ -20,13 +21,13 @@ import javax.servlet.http.HttpSession;
  */
 @WebServlet(name = "CreateDoctorServlet", urlPatterns = {"/CreateDoctorServlet"})
 public class CreateDoctorServlet extends HttpServlet {
-    final String DOCTOR_SIGNUP_JSP = "doctorsignup.jsp";
     final String DOCTOR_HOME_JSP = "doctorhome.jsp";
-    
+    final String DOCTOR_SIGNUP_JSP = "doctorsignup.jsp";
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.sendRedirect("doctorsignup.jsp");
+        response.sendRedirect(DOCTOR_SIGNUP_JSP);
     }
 
     @Override
@@ -66,7 +67,8 @@ public class CreateDoctorServlet extends HttpServlet {
 
         Integer dobDay    = Integer.parseInt(request.getParameter("dobDay"));
         Integer dobYear   = Integer.parseInt(request.getParameter("dobYear"));                                                                                                                  
-        Integer dobMonth  = Integer.parseInt(request.getParameter("dobMonth"));        
+        Integer dobMonth  = Integer.parseInt(request.getParameter("dobMonth"));     
+        Connection connection = null;
         try {
             
             boolean hasError = false;
@@ -146,18 +148,33 @@ public class CreateDoctorServlet extends HttpServlet {
                 request.setAttribute("errorWithDob", true);
                 hasError = true;
             }
+            connection = ProjectDBAO.getConnection();
+            connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);            
             if (hasError) {
                 request.getRequestDispatcher(DOCTOR_SIGNUP_JSP).forward(request, response);
             } else {
-                int homeAddressID = ProjectDBAO.makeAddress(homeStreetAddress, homePostalCode, homeCity, homeProvince); 
+                int homeAddressID = ProjectDBAO.makeAddress(
+                                        connection,
+                                        homeStreetAddress, homePostalCode, 
+                                        homeCity, homeProvince
+                                    ); 
 
                 Date dob = Date.valueOf(dobYear + "-" + dobMonth + "-" + dobDay);
-                int doctorID = ProjectDBAO.makeDoctor( firstName, lastName, alias, password, gender, 
-                                        dob, homeAddressID, licenseYear, specs );
-                int workAddressID = ProjectDBAO.makeAddress(workStreetAddress, workPostalCode, workCity, workProvince);
+                int doctorID = ProjectDBAO.makeDoctor( 
+                                    connection,
+                                    firstName, lastName, alias,
+                                    password, gender, 
+                                    dob, homeAddressID, licenseYear, specs 
+                                );
+                int workAddressID = ProjectDBAO.makeAddress( 
+                                        connection,
+                                        workStreetAddress, workPostalCode, 
+                                        workCity, workProvince
+                                    );
                 int[] workAddressArray = {workAddressID};
-                ProjectDBAO.addWorkAddresses(doctorID, workAddressArray);
-
+                ProjectDBAO.addWorkAddresses(connection, doctorID, workAddressArray);
+                connection.commit();
                 HttpSession session = request.getSession(true);
                 User u = ProjectDBAO.getDoctorByAlias(alias);
                 session.setAttribute("user", u);
@@ -165,6 +182,12 @@ public class CreateDoctorServlet extends HttpServlet {
                 response.sendRedirect(DOCTOR_HOME_JSP);
             }
         } catch (Exception ex) {
+            if(connection != null) {
+                try { 
+                    connection.rollback();
+                    connection.close(); 
+                } catch(Exception e) {}                
+            }
             throw new ServletException(ex);
         }
     }

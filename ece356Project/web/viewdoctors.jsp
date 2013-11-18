@@ -6,6 +6,7 @@
 <%@page import="ece356.model.Address"%>
 <%@page import="ece356.model.Doctor"%>
 <%@page import="ece356.model.Gender"%>
+<%@page import="ece356.model.Specialization"%>
 <%@page import="ece356.model.ProjectDBAO"%>
 <%
     Object x = session.getAttribute("user");
@@ -44,6 +45,7 @@
                         <th>Gender</th> 
                         <th>Date Of Birth</th> 
                         <th>Home Address</th> 
+                        <th>Specializations</th>                         
                         <th>Work Addresses</th> 
                         <th>Year of License</th> 
                       </thead>
@@ -64,6 +66,12 @@
                                       <%= d.getHomeAddress().getPostalCode() %>
                                     </p>                                    
                                 </td>
+                                <td>
+                                    <% for(Specialization s: ProjectDBAO.getSpecializationsForDoctor(d.getDoctorID())) { %>
+                                          <%= s.getName() %>
+                                          <br/>
+                                    <% } %>     
+                                </td>                                 
                                 <td>
                                     <% for(Address wa: ProjectDBAO.getWorkAddressByDoctorID(d.getDoctorID())) { %>
                                         <p>

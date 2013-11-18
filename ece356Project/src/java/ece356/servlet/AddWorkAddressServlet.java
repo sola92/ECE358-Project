@@ -8,6 +8,7 @@ import ece356.model.ProjectDBAO;
 import ece356.model.User;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -85,7 +86,7 @@ public class AddWorkAddressServlet extends HttpServlet {
         String workProvince      = request.getParameter("workProvince");                          
         String workPostalCode    = request.getParameter("workPostalCode");
         String workStreetAddress = request.getParameter("workStreetAddress");
-        
+        Connection connection = null;
         try {
             boolean hasError = false;
             if (workCity          == null || workCity.isEmpty()) {
@@ -107,14 +108,26 @@ public class AddWorkAddressServlet extends HttpServlet {
             if (hasError) {
                 request.getRequestDispatcher(ADD_WORK_ADDRESS_JSP).forward(request, response);
             } else {
-                int workAddressID = ProjectDBAO.makeAddress(workStreetAddress, workPostalCode, workCity, workProvince);
-                int[] workAddressArray = {workAddressID};
-                ProjectDBAO.addWorkAddresses(u.getUserID(), workAddressArray);
+                connection = ProjectDBAO.getConnection();
+                connection.setAutoCommit(false);
+                connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);                  
+                int workAddressID = ProjectDBAO.makeAddress(
+                                        connection, workStreetAddress, 
+                                        workPostalCode, workCity, workProvince
+                                    );
+                int[] workAddressArray = { workAddressID };
+                ProjectDBAO.addWorkAddresses(connection, u.getUserID(), workAddressArray);
                 session.setAttribute("user", u);
                 session.setAttribute("userIsDoctor", true);
                 response.sendRedirect(DOCTOR_HOME_JSP);
             }
         } catch(Exception e) {
+            if(connection != null) {
+                try { 
+                    connection.rollback();
+                    connection.close(); 
+                } catch(Exception ex) {}                
+            }            
             throw new ServletException(e);
         }        
         

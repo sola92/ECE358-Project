@@ -78,7 +78,7 @@ public class ProjectDBAO {
         return new Review(rating, reviewID, reviewDate, note, doctor, patient);    
     } 
     
-    private static Connection getConnection()
+    public static Connection getConnection()
             throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection(url, user, pwd);
@@ -141,7 +141,7 @@ public class ProjectDBAO {
         _alias = _alias.toLowerCase();
         try {
             connection = getConnection();
-            statement  = connection.prepareStatement("SELECT * from Patient JOIN User ON Patient.patientID = User.userID WHERE alias = ?");
+            statement  = connection.prepareStatement("SELECT * from PatientProfileView WHERE alias = ?");
             statement.setString(1, _alias);
             ResultSet result = statement.executeQuery();
             result.next();
@@ -160,7 +160,7 @@ public class ProjectDBAO {
         Connection connection       = null;
         PreparedStatement statement = null;
         ArrayList<Patient> patients = new ArrayList<Patient>();
-        final String QUERY = "SELECT * from Patient JOIN User ON Patient.patientID = User.userID";
+        final String QUERY = "SELECT * from PatientProfileView";
         try {
             connection = getConnection();
             statement  = connection.prepareStatement(QUERY);
@@ -197,7 +197,7 @@ public class ProjectDBAO {
         Patient patient             = null; 
         Connection connection       = null;
         PreparedStatement statement = null;
-        final String QUERY = "SELECT * from Patient JOIN User ON Patient.patientID = User.userID WHERE patientID = ?";
+        final String QUERY = "SELECT * from PatientProfileView WHERE patientID = ?";
         try {
              connection = getConnection();
              statement  = connection.prepareStatement(QUERY);
@@ -241,13 +241,11 @@ public class ProjectDBAO {
         alias = alias.toLowerCase();
         Connection connection       = null;
         PreparedStatement statement = null;        
-        final String query = "SELECT * " +
-        "FROM (" +
-            "SELECT * FROM Patient INNER JOIN User  " +
-            "ON Patient.patientID = User.userID " +
+        final String query = "SELECT * FROM ( " +
+            "SELECT * FROM PatientProfileView " +
             "WHERE alias LIKE ? AND patientID <> ? " +
         ") AS p " +
-        "WHERE (SELECT COUNT(*) FROM Friendship WHERE followerID = ? AND followeeID = p.patientID) = 0";
+        "WHERE (SELECT COUNT(*) FROM Friendship WHERE followerID = ? AND followeeID = p.patientID) = 0 ";
         try {
             connection   = getConnection();
             statement    = connection.prepareStatement(query);
@@ -270,7 +268,7 @@ public class ProjectDBAO {
         _alias = _alias.toLowerCase();
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("SELECT COUNT(*) FROM Patient JOIN User ON Patient.patientID = User.userID WHERE alias = ?");
+            statement = connection.prepareStatement("SELECT COUNT(*) FROM PatientProfileView WHERE alias = ?");
             statement.setString(1, _alias);
             ResultSet result = statement.executeQuery();
             result.next();
@@ -303,43 +301,42 @@ public class ProjectDBAO {
         return isDoctor;
     }     
     
-    private static int makeUser(String firstName, String lastName, String alias, String password)
-            throws ClassNotFoundException, SQLException {
-        Connection connection       = null;
+    private static int makeUser(Connection connection, String firstName, 
+                String lastName, String alias, String password)
+                        throws ClassNotFoundException, SQLException {
         PreparedStatement statement = null;  
         int userID = 0;                
-        connection   = getConnection();
         alias = alias.toLowerCase();        
-        try {
-            String query = "INSERT INTO User(firstName, lastName, alias, password) VALUES(?,?,?,?)";
-            statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, firstName);
-            statement.setString(2, lastName);
-            statement.setString(3, alias);
-            String hashed = BCrypt.hashpw(password, BCrypt.gensalt(12));
-            statement.setString(4, hashed);
-            statement.executeUpdate();
-            ResultSet rs = statement.getGeneratedKeys(); rs.next();
-            userID = rs.getInt(1);            
-        } finally {
-            if (statement  != null) statement.close();
-            if (connection != null) connection.close();
-        }
+        String query = "INSERT INTO User(firstName, lastName, alias, password) VALUES(?,?,?,?)";
+        statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, firstName);
+        statement.setString(2, lastName);
+        statement.setString(3, alias);
+        String hashed = BCrypt.hashpw(password, BCrypt.gensalt(12));
+        statement.setString(4, hashed);
+        statement.executeUpdate();
+        ResultSet rs = statement.getGeneratedKeys(); rs.next();
+        userID = rs.getInt(1);            
         return userID;
     }
     
     public static int makePatient(String firstName, String lastName, String alias, String password, String email)
             throws ClassNotFoundException, SQLException {
+        int userID = -1;
         Connection connection       = null;
         PreparedStatement statement = null;
-        int userID = -1;
         try {
             connection = getConnection();
-            userID     = makeUser(firstName, lastName, alias, password);
+            connection.setAutoCommit(false);
+            connection.setTransactionIsolation( Connection.TRANSACTION_SERIALIZABLE);            
+            userID     = makeUser(connection, firstName, lastName, alias, password);
             statement  = connection.prepareStatement("INSERT INTO Patient(patientID, email) VALUES(?, ?)");
             statement.setInt(1, userID);
             statement.setString(2, email);
             statement.executeUpdate();
+            connection.commit();
+        } catch(Exception e) {
+            connection.rollback();
         } finally {
             if (statement  != null) statement.close();
             if (connection != null) connection.close();
@@ -354,10 +351,15 @@ public class ProjectDBAO {
         int userID = -1;
         try {
             connection = getConnection();
-            userID     = makeUser(firstName, lastName, alias, password);
+            connection.setAutoCommit(false);
+            connection.setTransactionIsolation( Connection.TRANSACTION_SERIALIZABLE);            
+            userID     = makeUser(connection, firstName, lastName, alias, password);
             statement  = connection.prepareStatement("INSERT INTO Administrator(adminID) VALUES(?)");
             statement.setInt(1, userID);
             statement.executeUpdate();
+            connection.commit();
+        } catch(Exception e) {
+            connection.rollback();
         } finally {
             if (statement  != null) statement.close();
             if (connection != null) connection.close();
@@ -417,10 +419,10 @@ public class ProjectDBAO {
         
         Connection connection       = null;
         PreparedStatement statement = null;
+        final String QUERY = "INSERT INTO Review(doctorID, patientID, rating, note, reviewDate) VALUES (?,?,?,?,CURDATE())";
         try {
             connection = getConnection();
-            statement  = connection.prepareStatement(
-                            "INSERT INTO Review(doctorID, patientID, rating, note, reviewDate) VALUES (?,?,?,?,CURDATE())");
+            statement  = connection.prepareStatement(QUERY);
             statement.setInt(1, doctorID);
             statement.setInt(2, patientID);
             statement.setDouble(3, rating);
@@ -461,10 +463,10 @@ public class ProjectDBAO {
         if(followerID == followeeID) throw new IllegalArgumentException("user cannot follow themselves");
         Connection connection       = null;
         PreparedStatement statement = null;
+        final String QUERY = "INSERT INTO Friendship(followerID, followeeID) VALUES (?,?)"; 
         try {
             connection = getConnection();
-            statement  = connection.prepareStatement(
-                            "INSERT INTO Friendship(followerID, followeeID) VALUES (?,?)");
+            statement  = connection.prepareStatement(QUERY);
             statement.setInt(1, followerID);
             statement.setInt(2, followeeID);
             statement.executeUpdate();
@@ -478,7 +480,7 @@ public class ProjectDBAO {
             throws ClassNotFoundException, SQLException {
         Connection connection       = null;
         PreparedStatement statement = null;
-        final String QUERY          =  "DELETE FROM Review WHERE reviewID = ? ";
+        final String QUERY          = "DELETE FROM Review WHERE reviewID = ? ";
         try {
             connection = getConnection();
             statement  = connection.prepareStatement(QUERY);
@@ -490,29 +492,22 @@ public class ProjectDBAO {
         }            
     }  
 
-    public static int makeDoctor(
+    public static int makeDoctor( Connection connection,
                 String firstName, String lastName, String alias, String password, 
                 int gender, Date dob, int homeAddressID, int license, int[] specializations )
             throws ClassNotFoundException, SQLException {
         int userID                  = -1;
-        Connection connection       = null;
         PreparedStatement statement = null;
-        final String QUERY = "INSERT INTO Doctor(doctorID, gender, dob, homeAddressID, licenseYear) VALUES(?,?,?,?,?)";
-        try {
-            userID      = makeUser(firstName, lastName, alias, password);
-            connection  = getConnection();
-            statement   = connection.prepareStatement(QUERY);
-            statement.setInt (1, userID);
-            statement.setInt (2, gender);
-            statement.setDate(3, dob);
-            statement.setInt (4, homeAddressID);
-            statement.setInt (5, license);
-            statement.executeUpdate();
-            addSpecialization(userID, specializations);
-        } finally {
-            if (statement  != null) statement.close();  
-            if (connection != null) connection.close();
-        }
+        final String QUERY = "INSERT INTO Doctor(doctorID, gender, dob, homeAddressID, licenseYear) VALUES(?,?,?,?,?)";          
+        userID      = makeUser(connection, firstName, lastName, alias, password);
+        statement   = connection.prepareStatement(QUERY);
+        statement.setInt (1, userID);
+        statement.setInt (2, gender);
+        statement.setDate(3, dob);
+        statement.setInt (4, homeAddressID);
+        statement.setInt (5, license);
+        statement.executeUpdate();
+        addSpecialization(connection, userID, specializations);
         return userID;   
     }
 
@@ -520,12 +515,12 @@ public class ProjectDBAO {
         Doctor doctor               = null; 
         Connection connection       = null;
         PreparedStatement statement = null;
+        final String QUERY = "SELECT * from Doctor JOIN User ON Doctor.doctorID = User.userID WHERE doctorID = ?";
         try {
             connection = getConnection();
-            statement  = connection.prepareStatement("SELECT * from Doctor JOIN User ON Doctor.doctorID = User.userID WHERE doctorID = ?");
+            statement  = connection.prepareStatement(QUERY);
             statement.setInt(1, doctorID);
-            ResultSet result = statement.executeQuery();
-            result.next();
+            ResultSet result = statement.executeQuery(); result.next();
             doctor = rowToDoctor(result);
             statement.close();
 
@@ -536,45 +531,30 @@ public class ProjectDBAO {
         return doctor;
     } 
 
-    public static void addSpecialization(int doctorID, int[] specializations) 
+    public static void addSpecialization(Connection connection, int doctorID, int[] specializations) 
         throws ClassNotFoundException, SQLException {
-        Connection connection       = null;
         PreparedStatement statement = null;
         final String QUERY  = "INSERT INTO DoctorSpecialization(doctorID, specID) VALUES(?,?)";
-        try {
-            connection  = getConnection();
-            statement   = connection.prepareStatement(QUERY);
-            for(int specID: specializations) {
-                statement.setInt (1, doctorID);
-                statement.setInt (2, specID);
-                statement.addBatch();                                   
-            }
-            statement.executeBatch();
-        } finally {
-            if (statement  != null) statement.close();
-            if (connection != null) connection.close();
+        statement   = connection.prepareStatement(QUERY);
+        for(int specID: specializations) {
+            statement.setInt (1, doctorID);
+            statement.setInt (2, specID);
+            statement.addBatch();                                   
         }
+        statement.executeBatch();
     }
 
-    public static void addWorkAddresses(int doctorID, int[] addresses) 
+    public static void addWorkAddresses(Connection connection, int doctorID, int[] addresses) 
         throws ClassNotFoundException, SQLException {
-        Connection connection       = null;
-        PreparedStatement statement = null;
         final String QUERY  = "INSERT INTO WorkAddresses(doctorID, addressID) VALUES(?,?)";
-        try {
-            connection  = getConnection();
-            statement   = connection.prepareStatement(QUERY);
-            for(int addressID: addresses) {
-                statement.setInt(1, doctorID);
-                statement.setInt(2, addressID);
-                statement.addBatch();                                   
-            }
-            statement.executeBatch();
-        } finally {
-            if (statement  != null) statement.close();
-            if (connection != null) connection.close();
+        PreparedStatement statement = connection.prepareStatement(QUERY);
+        for(int addressID: addresses) {
+            statement.setInt(1, doctorID);
+            statement.setInt(2, addressID);
+            statement.addBatch();                                   
         }
-    }
+        statement.executeBatch();
+    }    
 
     public static Address getAddress(int aid) 
             throws ClassNotFoundException, SQLException {
@@ -654,26 +634,20 @@ public class ProjectDBAO {
         return doctor;
     }
 
-    public static int makeAddress(String streetAddress, String postalCode, String city, String province) 
+    public static int makeAddress(Connection connection, String streetAddress, 
+                String postalCode, String city, String province ) 
                         throws ClassNotFoundException, SQLException {
         int addressID = -1;
-        Connection connection       = null;
         PreparedStatement statement = null;    
         final String QUERY = "INSERT INTO Address(streetAddress, postalCode, city, province) VALUES (?,?,?,?)";
-        try {
-            connection = getConnection();
-            statement  = connection.prepareStatement(QUERY, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, streetAddress);
-            statement.setString(2, postalCode);
-            statement.setString(3, city);
-            statement.setString(4, province);
-            statement.executeUpdate();
-            ResultSet resultSet = statement.getGeneratedKeys(); resultSet.next();
-            addressID = resultSet.getInt(1);  
-        } finally {
-            if (statement  != null) statement.close();
-            if (connection != null) connection.close();
-        }            
+        statement  = connection.prepareStatement(QUERY, Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, streetAddress);
+        statement.setString(2, postalCode);
+        statement.setString(3, city);
+        statement.setString(4, province);
+        statement.executeUpdate();
+        ResultSet resultSet = statement.getGeneratedKeys(); resultSet.next();
+        addressID = resultSet.getInt(1);           
         return addressID;
     }
 
@@ -830,8 +804,7 @@ public class ProjectDBAO {
         return doctors;
     }    
 
-    private static void testConnection()
-            throws ClassNotFoundException, SQLException {
+    public static void testConnection() throws ClassNotFoundException, SQLException {
         Connection con = null;
         try {
             con = getConnection();
