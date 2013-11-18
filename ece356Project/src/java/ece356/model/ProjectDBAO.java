@@ -155,6 +155,46 @@ public class ProjectDBAO {
         return patient;
     } 
 
+    public static Boolean userIsPatient(String _alias) throws ClassNotFoundException, SQLException {
+        Boolean isPatient           = false; 
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT COUNT(*) FROM Patient JOIN User ON Patient.patientID = User.userID WHERE alias = ?");
+            statement.setString(1, _alias);
+            ResultSet result = statement.executeQuery();
+            result.next();
+            isPatient = result.getInt("COUNT(*)") == 1;
+            statement.close();
+
+        } finally {
+            if (statement != null)   statement.close();
+            if (connection != null)  connection.close();
+        }
+        return isPatient;
+    } 
+
+    public static Boolean userIsDoctor(String _alias) throws ClassNotFoundException, SQLException {
+        Boolean isDoctor           = false; 
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT COUNT(*) FROM Doctor JOIN User ON Doctor.doctorID = User.userID WHERE alias = ?");
+            statement.setString(1, _alias);
+            ResultSet result = statement.executeQuery();
+            result.next();
+            isDoctor = result.getInt("COUNT(*)") == 1;
+            statement.close();
+
+        } finally {
+            if (statement != null)   statement.close();
+            if (connection != null)  connection.close();
+        }
+        return isDoctor;
+    } 
+    
     public static Administrator getAdminByAlias(String _alias) throws ClassNotFoundException, SQLException {
         Administrator administrator = null; 
         Connection connection       = null;
