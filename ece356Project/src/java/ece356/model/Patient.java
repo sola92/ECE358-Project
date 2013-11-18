@@ -7,8 +7,8 @@ public class Patient extends User {
 	protected final String email;
 	
 	public Patient(	int userID, String firstName, String lastName, 
-					String alias, String password, String email ) {
-		super(userID, firstName, lastName, alias, password);
+					String alias, String email ) {
+		super(userID, firstName, lastName, alias);
 		this.email = email;
 	}  
 

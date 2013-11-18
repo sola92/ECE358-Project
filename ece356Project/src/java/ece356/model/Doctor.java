@@ -19,9 +19,9 @@ public class Doctor extends User {
 	protected List<Address> workAddresses;
 
 	public Doctor(	int userID, String firstName, String lastName, String alias, 
-					String password, Date dob, int gender, int licenseYear,
+					Date dob, int gender, int licenseYear,
 					Address homeAddress) {
-		super(userID, firstName, lastName, alias, password);
+		super(userID, firstName, lastName, alias);
 		this.dob           = dob;
 		this.gender        = gender;
 		this.licenseYear   = licenseYear;

@@ -5,16 +5,45 @@
 --%>
 <%@page import="java.util.List"%>
 <%@page import="ece356.model.Doctor"%>
+<%@page import="ece356.model.Gender"%>
+<%@page import="ece356.model.Address"%>
+<%@page import="ece356.model.ProjectDBAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<ul style="list-style-type:None;padding:0px;" id="res">
-    <%
-        List<Doctor> doctors = (List<Doctor>)request.getAttribute("doctors");
-        for(Doctor d: doctors) { %>
-            <li>
-                <a class="btn btn-default" href="fullReview.jsp?doctorID=<%=d.getDoctorID()%>" role="button">View Review</a>
-                <a class="btn btn-default" href="rateDoctor.jsp?doctorID=<%=d.getDoctorID()%>" role="button">Rate this Doctor</a>
-                <%= d.getFirstName() %>&nbsp<%= d.getLastName() %>
-            </li>
-        <% }
-    %>
-</ul>
+<% List<Doctor> doctors = (List<Doctor>)request.getAttribute("doctors"); %>
+<table class="table table-striped">
+  <thead>
+    <th>Doctor#</th>  
+    <th>Full Name</th>
+    <th>Alias</th>
+    <th>Gender</th> 
+    <th>Year of License</th> 
+    <th>Work Addresses</th> 
+    <th></th> 
+  </thead>
+  <tbody>
+   <% for(Doctor d: doctors) { %>
+        <tr>
+            <td><%= d.getDoctorID() %></td>
+            <td><%= d.getFullName() %></td>
+            <td><%= d.getAlias() %></td>
+            <td><%= d.getGender() == Gender.Male ? "Male" : "Female" %></td>   
+            <td><%= d.getLicenseYear() %></td>
+            <td>
+                <% for(Address wa: ProjectDBAO.getWorkAddressByDoctorID(d.getDoctorID())) { %>
+                    <p>
+                        <%= wa.getStreetName() %>
+                        <br/>
+                        <%= wa.getCity() %>,
+                        <%= wa.getProvince() %>
+                        <%= wa.getPostalCode() %>
+                      </p> 
+                <% } %>     
+            </td>            
+            <td>
+               <a class="btn btn-sm btn-success" href="fullReview.jsp?doctorID=<%=d.getDoctorID()%>"  role="button">View Reviews</a>
+               <a role="button" href="rateDoctor.jsp?doctorID=<%=d.getDoctorID()%>" class="btn btn-sm btn-info">Rate</a>               
+            </td>             
+        </tr>
+    <% } %>                        
+  </tbody>
+</table>                       
