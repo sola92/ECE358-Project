@@ -186,6 +186,16 @@ CREATE INDEX user_postalCode USING HASH ON Address(postalCode);
 
 CREATE INDEX specialization_name USING HASH ON Specialization(name);
 
+CREATE VIEW PatientProfileView AS 
+SELECT 	
+	userID,
+	firstName, 
+	lastName, 
+	alias, 
+	email,
+	patientID	
+FROM Patient AS p 
+INNER JOIN User AS u ON p.patientID = u.userID;
 
 /*
 SELECT 	DISTINCT u.*, d.*
