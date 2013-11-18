@@ -7,6 +7,7 @@
 <%@page import="ece356.model.Doctor"%>
 <%@page import="ece356.model.Gender"%>
 <%@page import="ece356.model.Address"%>
+<%@page import="ece356.model.Specialization"%>
 <%@page import="ece356.model.ProjectDBAO"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <% List<Doctor> doctors = (List<Doctor>)request.getAttribute("doctors"); %>
@@ -16,6 +17,7 @@
     <th>Full Name</th>
     <th>Alias</th>
     <th>Gender</th> 
+    <th>Specializations</th> 
     <th>Year of License</th> 
     <th>Work Addresses</th> 
     <th></th> 
@@ -27,6 +29,12 @@
             <td><%= d.getFullName() %></td>
             <td><%= d.getAlias() %></td>
             <td><%= d.getGender() == Gender.Male ? "Male" : "Female" %></td>   
+            <td>
+                <% for(Specialization s: ProjectDBAO.getSpecializationsForDoctor(d.getDoctorID())) { %>
+                      <%= s.getName() %>
+                      <br/>
+                <% } %>     
+            </td>  
             <td><%= d.getLicenseYear() %></td>
             <td>
                 <% for(Address wa: ProjectDBAO.getWorkAddressByDoctorID(d.getDoctorID())) { %>

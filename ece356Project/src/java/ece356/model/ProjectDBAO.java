@@ -302,7 +302,7 @@ public class ProjectDBAO {
         Connection connection       = null;
         PreparedStatement statement = null;  
         int userID = 0;                
-        connection   = getConnection();
+        connection   = getConnection(); 
         try {
             String query = "INSERT INTO User(firstName, lastName, alias, password) VALUES(?,?,?,?)";
             statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
@@ -359,6 +359,29 @@ public class ProjectDBAO {
     }   
 
 
+    public static List<Specialization> getSpecializationsForDoctor(int doctorID)
+            throws ClassNotFoundException, SQLException {
+        ArrayList<Specialization> specializations = new ArrayList<Specialization>();
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        final String QUERY = "SELECT * FROM Specialization NATURAL JOIN DoctorSpecialization WHERE doctorID = ?";
+        try {
+            connection = getConnection();
+            statement  = connection.prepareStatement(QUERY);
+            statement.setInt(1, doctorID);
+            ResultSet resultSet = statement.executeQuery(); 
+            while(resultSet.next()) {
+                int specID  = resultSet.getInt("specID");
+                String name = resultSet.getString("name");
+                specializations.add(new Specialization(specID, name)); 
+            }            
+        } finally {
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
+        }            
+        return specializations;
+    }      
+
     public static List<Specialization> getSpecializations()
             throws ClassNotFoundException, SQLException {
         ArrayList<Specialization> specializations = new ArrayList<Specialization>();
@@ -378,7 +401,7 @@ public class ProjectDBAO {
             if (connection != null) connection.close();
         }            
         return specializations;
-    }      
+    }     
 
     public static void makeReview (
                 double rating, String note, int doctorID,
@@ -687,7 +710,7 @@ public class ProjectDBAO {
             String city, String province, 
             Integer licenseYearStart, Integer licenseYearEnd,
             Double averageRatingStart, Double averageRatingEnd,
-            Boolean recommendedByFriend
+            Boolean recommendedByFriend, Integer gender
         ) throws ClassNotFoundException, SQLException {    
         ArrayList<Doctor> doctors = new ArrayList<Doctor>();
         Connection connection       = null;
@@ -725,7 +748,12 @@ public class ProjectDBAO {
         
         if(firstName != null && !firstName.equals("")) {
             where += " AND firstName LIKE '%" + firstName + "%'";
-        }      
+        }  
+
+        if(gender != null && (gender == Gender.Male || gender == Gender.Female)) {
+            where += " AND gender = " + gender;
+        }
+            
         
         if(streetAddress != null && !streetAddress.equals("")) {
             where += " AND wa.streetAddress LIKE '%" + streetAddress + "%'";

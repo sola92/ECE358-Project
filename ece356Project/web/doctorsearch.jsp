@@ -4,6 +4,7 @@
     Author     : Sola
 --%>
 <%@page import="ece356.model.User"%>
+<%@page import="ece356.model.Gender"%>
 <%
     Object x = session.getAttribute("user");
     if(x == null || session.getAttribute("userIsPatient") == null || !(Boolean)session.getAttribute("userIsPatient")) {
@@ -79,7 +80,21 @@
                                     <label for="lastName">Last Name</label>
                                     <input type="text" class="form-control" name="lastName" 
                                             id="lastName" placeholder="Enter a last name">
-                            </div>          
+                            </div>   
+                          <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <div class="col-sm-10">
+                              <label class="radio-inline">
+                                  <input type="radio" name="gender" id="gender" value="" checked> None
+                              </label>                                
+                              <label class="radio-inline">
+                                  <input type="radio" name="gender" id="gender" value="<%= Gender.Male %>"> Male
+                              </label>
+                              <label class="radio-inline">
+                                <input type="radio" name="gender" id="gender" value="<%= Gender.Female %>"> Female
+                              </label>                      
+                            </div>
+                          </div> <br>                                  
                            <div class="form-group">
                                 <label for="licenseYearStart">Lowest License Year</label>
                                 <select name="licenseYearStart" class="form-control">
@@ -111,7 +126,7 @@
                                 </select>  
                             </div>  
                             <div class="form-group">
-                                <label for="averageRatingEnd">Highest License Year</label>
+                                <label for="averageRatingEnd">Highest Average Rating</label>
                                 <select name="averageRatingEnd" class="form-control">
                                     <option value="">None</option>
                                     <% for (float i = 0; i <= 5; i += 0.5) { %>

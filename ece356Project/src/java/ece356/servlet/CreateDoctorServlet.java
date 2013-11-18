@@ -42,9 +42,8 @@ public class CreateDoctorServlet extends HttpServlet {
         String workPostalCode    = request.getParameter("workPostalCode");
         String workStreetAddress = request.getParameter("workStreetAddress");
 
-        Integer gender            = Integer.parseInt(request.getParameter("gender"));
-        Integer licenseYear       = Integer.parseInt(request.getParameter("licenseYear"));
-        String[] strSpecializations  = request.getParameterValues("specialization[]");
+
+        String[] strSpecializations  = request.getParameterValues("specialization");
         int[] specs  = new int[0];
         if(strSpecializations != null) {
            specs = new int[strSpecializations.length];
@@ -52,7 +51,9 @@ public class CreateDoctorServlet extends HttpServlet {
                specs[i] = Integer.parseInt(strSpecializations[i]);
            }
         } 
-
+        Integer gender            = Integer.parseInt(request.getParameter("gender"));
+        Integer licenseYear       = Integer.parseInt(request.getParameter("licenseYear"));
+        
         String alias     = request.getParameter("alias");
         String lastName  = request.getParameter("lastName");
         String password  = request.getParameter("password");
