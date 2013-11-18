@@ -1,5 +1,6 @@
 package ece356.model;
 
+import ece356.crypto.BCrypt;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -29,18 +30,16 @@ public class ProjectDBAO {
         String email     = result.getString("email");
         String alias     = result.getString("alias");
         String lastName  = result.getString("lastName");
-        String password  = result.getString("password");
         String firstName = result.getString("firstName");   
-        return new Patient(userID, firstName, lastName, alias, password, email);    
+        return new Patient(userID, firstName, lastName, alias, email);    
     }
 
     private static Administrator rowToAdmin(ResultSet result) throws SQLException {
         int userID       = result.getInt("userID");
         String alias     = result.getString("alias");
         String lastName  = result.getString("lastName");
-        String password  = result.getString("password");
         String firstName = result.getString("firstName");   
-        return new Administrator(userID, firstName, lastName, alias, password);    
+        return new Administrator(userID, firstName, lastName, alias);    
     }    
 
     private static Doctor rowToDoctor(ResultSet result) 
@@ -48,14 +47,13 @@ public class ProjectDBAO {
         int userID          = result.getInt("userID");
         String alias        = result.getString("alias");
         String lastName     = result.getString("lastName");
-        String password     = result.getString("password");
         String firstName    = result.getString("firstName"); 
         Date dob            = result.getDate("dob");
         int gender          = result.getInt("gender");
         int licenseYear      = result.getInt("licenseYear");
         Address homeAddress = getAddress(result.getInt("homeAddressID"));
         return new Doctor(userID, firstName,lastName, alias, 
-                   password, dob, gender, licenseYear,
+                   dob, gender, licenseYear,
                     homeAddress);    
     }    
     
@@ -124,18 +122,16 @@ public class ProjectDBAO {
         PreparedStatement statement = null;
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("SELECT COUNT(*) FROM User WHERE alias = ? AND password = ?");
+            statement = connection.prepareStatement("SELECT * FROM User WHERE alias = ?");
             statement.setString(1, alias);
-            statement.setString(2, MD5(password));
             ResultSet result = statement.executeQuery();
             result.next();
-            exists = result.getInt("COUNT(*)") == 1;
+            return (BCrypt.checkpw(password, result.getString("password")));
         } finally {
             if (statement != null)   statement.close();
             if (connection != null)  connection.close();
         }
-        return exists;
-    } 
+    }
 
     public static Patient getPatientByAlias(String _alias) throws ClassNotFoundException, SQLException {
         Patient patient             = null; 
@@ -313,7 +309,8 @@ public class ProjectDBAO {
             statement.setString(1, firstName);
             statement.setString(2, lastName);
             statement.setString(3, alias);
-            statement.setString(4, MD5(password));
+            String hashed = BCrypt.hashpw(password, BCrypt.gensalt(12));
+            statement.setString(4, hashed);
             statement.executeUpdate();
             ResultSet rs = statement.getGeneratedKeys(); rs.next();
             userID = rs.getInt(1);            
@@ -616,12 +613,10 @@ public class ProjectDBAO {
                 int userID       = result.getInt   ("userID");
                 String alias     = result.getString("alias");
                 String lastName  = result.getString("lastName");
-                String password  = result.getString("password");
                 String firstName = result.getString("firstName");
                 int licenseYear  = result.getInt   ("licenseYear");
                 Address homeAddress = getAddress(result.getInt("homeAddressID"));           
-                doctor = new Doctor(userID, firstName, lastName, alias, 
-                                    password, dob, gender, licenseYear, homeAddress);
+                doctor = new Doctor(userID, firstName, lastName, alias, dob, gender, licenseYear, homeAddress);
             }
         } finally {
             if (statement  != null) statement.close();
@@ -765,8 +760,8 @@ public class ProjectDBAO {
         }     
 
         if(recommendedByFriend != null) {
-            where += " AND (SELECT COUNT(*) FROM Review WHERE doctorID = d.doctorID AND patientID " + 
-                     " IN (SELECT followeeID FROM Friendship WHERE followerID = " + averageRatingEnd + ") " + 
+            where += " AND (SELECT COUNT(*) FROM Review WHERE rating >= 3 AND doctorID = d.doctorID AND patientID " + 
+                     " IN (SELECT followeeID FROM Friendship WHERE followerID = " + currentUserID + ") " + 
                      " ) " + (recommendedByFriend ? "> 0": " = 0");
         }            
         

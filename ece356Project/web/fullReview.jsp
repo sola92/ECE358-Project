@@ -52,16 +52,25 @@
             <div class="col-md-8">
                 <%if(reviews.size()>0) {%>
                 <h3>Reviews for <%= d.getFullName() %> </h3>
-                <ul class="list-style-type:none;padding:0px;">
-                    <%for(Review r: reviews) {%>
-                    <li class="well-sm">
-                        Reviewer:<%=(r.getPatient()).getFullName()%>
-                        Date:<%=r.getReviewDate()%>
-                        Rating:<%=r.getRating()%>
-                        Note:<%=r.getNote()%>
-                    </li>
-                    <%}%>
-                </ul>  
+                
+                <table class="table table-striped">
+                <thead>
+                  <th>Reviewer</th>  
+                  <th>Date</th>
+                  <th>Rating</th>
+                  <th>Comment</th>
+                </thead>
+                <tbody>
+                 <% for(Review r: reviews) { %>
+                      <tr>
+                          <td><%= r.getPatient().getFullName() %></td>
+                          <td><%= r.getReviewDate() %></td>
+                          <td><%= r.getRating() %></td>
+                          <td><%= r.getNote() %></td>               
+                      </tr>
+                  <% } %>                        
+                </tbody>
+              </table>  
                 <%} else {%>
                     <h3>Sorry there are no reviews for this doctor</h3>
                 <%}%>

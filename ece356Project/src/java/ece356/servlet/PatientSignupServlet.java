@@ -36,12 +36,24 @@ public class PatientSignupServlet extends HttpServlet {
         String email1    = request.getParameter("inputEmail3");
         String password1 = request.getParameter("inputPassword3");
         try {
-            ProjectDBAO.makePatient(firstName, lastName, alias, password1, email1);
-            HttpSession session = request.getSession(true);
-            User u = ProjectDBAO.getPatientByAlias(alias);
-            session.setAttribute("user", u);
-            session.setAttribute("userIsPatient", true);
-            response.sendRedirect(PATIENT_HOME_JSP);
+            if (firstName == null || firstName.isEmpty()) {
+                
+            } else if (lastName == null || lastName.isEmpty()) {
+                
+            } else if (alias == null || alias.isEmpty()) {
+                
+            } else if (email1 == null || email1.isEmpty()) {
+                
+            } else if (password1 == null || password1.isEmpty()) {
+                
+            } else {
+                ProjectDBAO.makePatient(firstName, lastName, alias, password1, email1);
+                HttpSession session = request.getSession(true);
+                User u = ProjectDBAO.getPatientByAlias(alias);
+                session.setAttribute("user", u);
+                session.setAttribute("userIsPatient", true);
+                response.sendRedirect(PATIENT_HOME_JSP);
+            }
         } catch(Exception e) {
             throw new ServletException(e);
         }

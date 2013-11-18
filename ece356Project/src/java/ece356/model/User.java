@@ -14,13 +14,11 @@ public abstract class User extends Model {
 	protected final String firstName;
 	protected final String lastName;
 	protected final String alias;
-	protected final String password;
 
-	public User(int userID, String firstName, String lastName, String alias, String password) {
+	public User(int userID, String firstName, String lastName, String alias) {
 		this.alias     = alias;
 		this.userID    = userID;
-		this.lastName  = lastName;
-		this.password  = password;		
+		this.lastName  = lastName;	
 		this.firstName = firstName;
 	}
 
@@ -42,9 +40,5 @@ public abstract class User extends Model {
                 
 	public String getAlias() {
 		return alias;
-	}
-
-	public String getPassword() {
-		return password;
 	}
 }
