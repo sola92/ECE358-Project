@@ -32,6 +32,10 @@
         <servlet-name>DoctorSearchServlet</servlet-name>
         <servlet-class>ece356.servlet.DoctorSearchServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AddWorkAddressServlet</servlet-name>
+        <servlet-class>ece356.servlet.AddWorkAddressServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>/static/*</url-pattern>
@@ -67,6 +71,10 @@
     <servlet-mapping>
         <servlet-name>DoctorSearchServlet</servlet-name>
         <url-pattern>/DoctorSearch</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddWorkAddressServlet</servlet-name>
+        <url-pattern>/AddWorkAddressServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

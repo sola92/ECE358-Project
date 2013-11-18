@@ -4,6 +4,8 @@
  */
 package ece356.servlet;
 
+import ece356.model.ProjectDBAO;
+import ece356.model.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -12,14 +14,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import ece356.model.ProjectDBAO;
-import ece356.model.User;
-
 /**
  *
  * @author vincent
  */
-public class DoctorHomeSevlet extends HttpServlet {
+public class AddWorkAddressServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP
@@ -31,13 +30,17 @@ public class DoctorHomeSevlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    final String DOCTOR_HOME_JSP = "doctorhome.jsp";
+    final String LOGIN_JSP = "index.jsp";
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-      
+        response.setContentType("text/html;charset=UTF-8");
+        
         try {
-            response.sendRedirect("doctorhome.jsp");
-        } finally {            
             
+        } finally {            
+        
         }
     }
 
@@ -54,9 +57,7 @@ public class DoctorHomeSevlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(true);
-        request.setAttribute("lastName", "john");
-        response.sendRedirect("doctorhome.jsp");
+        processRequest(request, response);
     }
 
     /**
@@ -71,6 +72,29 @@ public class DoctorHomeSevlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(true);
+        if(session.getAttribute("user") == null) {
+            response.sendRedirect(LOGIN_JSP);
+            return;
+        } 
+        
+        User u = (User)session.getAttribute("user");
+        
+        String workCity          = request.getParameter("workCity");
+        String workProvince      = request.getParameter("workProvince");                          
+        String workPostalCode    = request.getParameter("workPostalCode");
+        String workStreetAddress = request.getParameter("workStreetAddress");
+        
+        try {
+            int workAddressID = ProjectDBAO.makeAddress(workStreetAddress, workPostalCode, workCity, workProvince);
+            int[] workAddressArray = {workAddressID};
+            ProjectDBAO.addWorkAddresses(u.getUserID(), workAddressArray);
+            session.setAttribute("user", u);
+            session.setAttribute("userIsDoctor", true);
+            response.sendRedirect(DOCTOR_HOME_JSP);
+        } catch(Exception e) {
+            throw new ServletException(e);
+        }        
         
         
     }

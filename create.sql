@@ -106,7 +106,7 @@ CREATE TABLE Friendship(
 	FOREIGN KEY (followeeID) REFERENCES Patient(patientID)	
 );
 
-
+/*
 DROP VIEW IF EXISTS DocterProfileView; d
 CREATE VIEW DocterProfileView AS 
     SELECT doctorID
@@ -118,33 +118,8 @@ CREATE VIEW DocterProfileView AS
     NATURAL JOIN WorkAddresses
     NATURAL JOIN Address
     NATURAL JOIN DoctorSpecialization
-    NATURAL JOIN Specialization;
+    NATURAL JOIN Specialization;*/
 
 
-SELECT *	
-    FROM Doctor AS d
-    NATURAL JOIN (
-    	SELECT 
-    	doctorID,
-        addressID   AS 	homeAddressID,
-		streetAddress AS  homeStreetAddress,
-		postalCode  AS  homePostalCode,
-		city 	    AS  homeCity,
-		province    AS  homeProvince
-		FROM Doctor NATURAL JOIN Address
-    ) ha
-    NATURAL JOIN (
-    	SELECT 
-    	doctorID,
-        addressID   	AS 	workAddressID,
-		streetAddress 	AS  workStreetAddress,
-		postalCode  	AS  workPostalCode,
-		city 	    	AS  workCity,
-		province    	AS  workProvince
-		FROM Doctor 
-		NATURAL JOIN WorkAddresses
-		NATURAL JOIN Address
-    ) wa 
-    NATURAL JOIN Specialization;
 
 
