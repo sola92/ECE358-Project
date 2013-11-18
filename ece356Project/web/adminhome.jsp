@@ -27,6 +27,9 @@
                   <a href="viewdoctors.jsp" class="list-group-item">
                     View all doctors
                   </a>
+                  <a href="searchreviews.jsp" class="list-group-item">
+                    Search Reviews
+                  </a>                  
                 </div>         
             </div>  
         </div> 

@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 
@@ -403,7 +404,6 @@ public class ProjectDBAO {
             if (statement  != null) statement.close();
             if (connection != null) connection.close();
         }            
-        
     }   
     
     public static List<Review> getReviewsByDoctorID(int doctorID) 
@@ -429,8 +429,6 @@ public class ProjectDBAO {
         return reviewArray;
     }
     
-    
-
     public static void makeFriendship(int followerID, int followeeID) 
             throws ClassNotFoundException, SQLException {
         if(followerID == followeeID) throw new IllegalArgumentException("user cannot follow themselves");
@@ -449,6 +447,24 @@ public class ProjectDBAO {
         }            
     }           
     
+    public static void deleteReview(int reviewID) 
+            throws ClassNotFoundException, SQLException {
+        if(followerID == followeeID) throw new IllegalArgumentException("user cannot follow themselves");
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getConnection();
+            statement  = connection.prepareStatement(
+                            "INSERT INTO Friendship(followerID, followeeID) VALUES (?,?)");
+            statement.setInt(1, followerID);
+            statement.setInt(2, followeeID);
+            statement.executeUpdate();
+        } finally {
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
+        }            
+    }  
+
     public static int makeDoctor(
                 String firstName, String lastName, String alias, String password, 
                 int gender, Date dob, int homeAddressID, int license, int[] specializations )
@@ -635,6 +651,38 @@ public class ProjectDBAO {
             if (connection != null) connection.close();
         }            
         return addressID;
+    }
+
+    
+    public static List<Review> searchReviews(String query, String startDate, String endDate) 
+                        throws ClassNotFoundException, SQLException {
+        ArrayList<Review> reviews = new ArrayList<Review>();
+        Connection connection       = null;
+        PreparedStatement statement = null;    
+        String QUERY = "SELECT * FROM Review WHERE 1=1 ";
+             
+        if(startDate != null && !startDate.isEmpty()) {
+            QUERY += " AND reviewDate >= '" + startDate + "'";
+        }
+
+        if(endDate != null && !endDate.isEmpty()) {
+            QUERY += " AND reviewDate <= '" + endDate + "'";
+        }              
+
+        if(query != null) {
+            QUERY += " AND note LIKE '%" + query + "%'";
+        }  
+        
+        try {
+            connection = getConnection();
+            statement  = connection.prepareStatement(QUERY);
+            ResultSet resultSet = statement.executeQuery(); 
+            while(resultSet.next()) reviews.add(rowToReview(resultSet));
+        } finally {
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
+        }            
+        return reviews;
     }
 
     public static List<Doctor> searchDoctors(
