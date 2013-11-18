@@ -755,7 +755,6 @@ public class ProjectDBAO {
             where += " AND gender = " + gender;
         }
             
-        
         if(streetAddress != null && !streetAddress.equals("")) {
             where += " AND workStreetAddress LIKE '%" + streetAddress + "%'";
         }
@@ -788,13 +787,17 @@ public class ProjectDBAO {
             where += " AND licenseYear BETWEEN " + licenseYearStart + " AND " + licenseYearEnd;
         } 
 
-        if(averageRatingStart != null) {
+        if(averageRatingStart != null && averageRatingEnd == null) {
             where += " AND averageRating >= " + averageRatingStart;
         }  
 
-        if(averageRatingEnd != null) {
+        if(averageRatingEnd != null && averageRatingStart == null) {
             where += " AND averageRating =< " + averageRatingEnd;
         }     
+
+        if(averageRatingEnd == null && averageRatingStart == null) {
+            where += " AND averageRating BETWEEN " + averageRatingStart + " AND " + averageRatingEnd;
+        }        
 
         if(recommendedByFriend != null) {
             where += " AND (SELECT COUNT(*) FROM Review WHERE rating >= 3 AND doctorID = d.doctorID AND patientID " + 

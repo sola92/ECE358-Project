@@ -17,7 +17,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="/ece356Project/static/css/bootstrap.min.css" />
-        <title>Doctor Search</title>
+        <title>Search Reviews</title>
     </head>
     <body>
         <nav class="navbar navbar-default" role="navigation">
@@ -82,7 +82,7 @@
                         $(elem).parent().parent().fadeOut();
                     });
                 };
-                
+
                 $('#searchButton').click(function() {
                     var data = $('form').serialize();
                     console.log(data);
