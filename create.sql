@@ -109,7 +109,8 @@ CREATE TABLE Friendship(
 
 SELECT 	DISTINCT u.*, d.*
         FROM Doctor AS d
-        NATURAL JOIN (
+        INNER JOIN User AS u ON d.doctorID = u.userID
+        LEFT OUTER JOIN (
             SELECT 
             doctorID,
             addressID   	AS 	workAddressID,
@@ -120,15 +121,13 @@ SELECT 	DISTINCT u.*, d.*
                     FROM Doctor 
                     NATURAL JOIN WorkAddresses
                     NATURAL JOIN Address
-        ) wa 
-        NATURAL JOIN (
-            SELECT AVG(rating) as averageRating, doctorID
-            FROM Review
+        ) wa ON wa.doctorID = d.doctorID 
+        LEFT OUTER JOIN (
+            SELECT IFNULL(AVG(r.rating), 0) as averageRating, d2.doctorID
+            FROM Review AS r
+            RIGHT OUTER JOIN Doctor d2 ON d2.doctorID = r.doctorID
             GROUP BY doctorID
-        ) ar 
-        NATURAL JOIN Specialization
-        WHERE 1=1 AND (
-            SELECT COUNT(*) FROM Review WHERE doctorID = d.doctorID AND patientID IN (SELECT followeeID FROM Friendship WHERE followerID = 2)
-        ) > 0
-
+        ) ar ON ar.doctorID = d.doctorID 
+        LEFT OUTER JOIN DoctorSpecialization s ON s.doctorID = d.doctorID 
+        WHERE 1=1 AND u.firstName = 'asdopi';
 

@@ -45,7 +45,6 @@ public class ProjectDBAO {
     private static Doctor rowToDoctor(ResultSet result) 
         throws ClassNotFoundException, SQLException {
         int userID          = result.getInt("userID");
-        String email        = result.getString("email");
         String alias        = result.getString("alias");
         String lastName     = result.getString("lastName");
         String password     = result.getString("password");
@@ -202,6 +201,44 @@ public class ProjectDBAO {
         }
         return patients;
     }    
+
+    public static Boolean userIsPatient(String _alias) throws ClassNotFoundException, SQLException {
+        Boolean isPatient           = false; 
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT COUNT(*) FROM Patient JOIN User ON Patient.patientID = User.userID WHERE alias = ?");
+            statement.setString(1, _alias);
+            ResultSet result = statement.executeQuery();
+            result.next();
+            isPatient = result.getInt("COUNT(*)") == 1;
+            statement.close();
+        } finally {
+            if (statement != null)   statement.close();
+            if (connection != null)  connection.close();
+        }
+        return isPatient;
+    } 
+
+    public static Boolean userIsDoctor(String _alias) throws ClassNotFoundException, SQLException {
+        Boolean isDoctor           = false; 
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getConnection();
+            statement = connection.prepareStatement("SELECT COUNT(*) FROM Doctor JOIN User ON Doctor.doctorID = User.userID WHERE alias = ?");
+            statement.setString(1, _alias);
+            ResultSet result = statement.executeQuery();
+            result.next();
+            isDoctor = result.getInt("COUNT(*)") == 1;
+            statement.close();
+        } finally {
+            if (statement != null)   statement.close();
+            if (connection != null)  connection.close();
+        }
+        return isDoctor;
+    }     
     
     private static int makeUser(String firstName, String lastName, String alias, String password)
             throws ClassNotFoundException, SQLException {
@@ -507,69 +544,70 @@ public class ProjectDBAO {
         Connection connection       = null;
         PreparedStatement statement = null;    
         String QUERY = 
-            " SELECT DISTINCT u.*, d.* " +
-            " FROM Doctor AS d " +
-            " INNER JOIN User AS u ON d.doctorID = u.userID " +
-            " NATURAL JOIN ( " +
-                " SELECT  " +
-                " doctorID, " +
-                " addressID   	AS 	workAddressID, " +
-                        " streetAddress 	AS  workStreetAddress, " +
-                        " postalCode  	AS  workPostalCode, " +
-                        " city 	    	AS  workCity, " +
-                        " province    	AS  workProvince " +
-                        " FROM Doctor  " +
-                        " NATURAL JOIN WorkAddresses " +
-                        " NATURAL JOIN Address " +
-            " ) wa  " +
-            " NATURAL JOIN ( " +
-                " SELECT AVG(rating) as averageRating, doctorID " +
-                " FROM Review " +
-                " GROUP BY doctorID " +
-            " ) ar  " +
-            " NATURAL JOIN Specialization " +
+            "SELECT DISTINCT u.*, d.* " +
+                    "FROM Doctor AS d " +
+                    "INNER JOIN User AS u ON d.doctorID = u.userID " +
+                    "LEFT OUTER JOIN ( " +
+                        "SELECT  " +
+                            "doctorID, " +
+                            "addressID   	AS 	workAddressID, " +
+                            "streetAddress 	AS  workStreetAddress, " +
+                            "postalCode  	AS  workPostalCode, " +
+                            "city 	    	AS  workCity, " +
+                            "province    	AS  workProvince " +
+                        "FROM Doctor  " +
+                        "NATURAL JOIN WorkAddresses " +
+                        "NATURAL JOIN Address " +
+                    ") wa ON wa.doctorID = d.doctorID  " +
+                    "LEFT OUTER JOIN ( " +
+                        "SELECT IFNULL(AVG(r.rating), 0) as averageRating, d2.doctorID " +
+                        "FROM Review AS r " +
+                        "RIGHT OUTER JOIN Doctor d2 ON d2.doctorID = r.doctorID " +
+                        "GROUP BY doctorID " +
+                    ") ar ON ar.doctorID = d.doctorID  " +
+                    "LEFT OUTER JOIN DoctorSpecialization s ON s.doctorID = d.doctorID  " +
             " WHERE 1=1 ";
 
         String where = "";
 
-        if(lastName != null) {
-            where += " AND lastName = '" + lastName + "'";
+        if(lastName != null && !lastName.equals("")) {
+            where += " AND lastName LIKE '%" + lastName + "%'";
         }
         
-        if(firstName != null) {
-            where += " AND firstName = '" + firstName + "'";
+        if(firstName != null && !firstName.equals("")) {
+            where += " AND firstName LIKE '%" + firstName + "%'";
         }      
         
-        if(streetAddress != null) {
-            where += " AND streetAddress = '" + streetAddress + "'";
+        if(streetAddress != null && !streetAddress.equals("")) {
+            where += " AND wa.streetAddress LIKE '%" + streetAddress + "%'";
         }
         
-        if(postalCode != null) {
-            where += " AND postalCode = '" + postalCode + "'";
+        if(postalCode != null && !postalCode.equals("")) {
+            where += " AND wa.postalCode LIKE '%" + postalCode + "%'";
         }        
 
-        if(city != null) {
-            where += " AND city = '" + city + "'";
+        if(city != null && !city.equals("")) {
+            where += " AND wa.city LIKE '%" + city + "'%";
         }     
 
-        if(province != null) {
-            where += " AND province = '" + province + "'";
+        if(province != null && !province.equals("")) {
+            where += " AND wa.province LIKE '%" + province + "'%";
         } 
 
         if(licenseYearStart != null) {
-            where += " AND licenseYear > " + licenseYearStart;
+            where += " AND licenseYear >= " + licenseYearStart;
         } 
 
         if(licenseYearEnd != null) {
-            where += " AND licenseYear < " + licenseYearEnd;
+            where += " AND licenseYear =< " + licenseYearEnd;
         }        
         
         if(averageRatingStart != null) {
-            where += " AND averageRating > " + averageRatingStart;
+            where += " AND averageRating >= " + averageRatingStart;
         }  
 
         if(averageRatingEnd != null) {
-            where += " AND averageRating < " + averageRatingEnd;
+            where += " AND averageRating =< " + averageRatingEnd;
         }     
 
         if(recommendedByFriend != null) {
