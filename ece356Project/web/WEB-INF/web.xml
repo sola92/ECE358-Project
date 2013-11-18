@@ -28,6 +28,10 @@
         <servlet-name>DoctorHomeSevlet</servlet-name>
         <servlet-class>ece356.servlet.DoctorHomeSevlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DoctorSearchServlet</servlet-name>
+        <servlet-class>ece356.servlet.DoctorSearchServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>/static/*</url-pattern>
@@ -59,6 +63,10 @@
     <servlet-mapping>
         <servlet-name>DoctorHomeSevlet</servlet-name>
         <url-pattern>/DoctorHomeSevlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoctorSearchServlet</servlet-name>
+        <url-pattern>/DoctorSearch</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
