@@ -17,6 +17,7 @@ public class Doctor extends User {
 	protected final int licenseYear;
 	protected final Address homeAddress;
 	protected List<Address> workAddresses;
+	protected double averageRating;
 
 	public Doctor(	int userID, String firstName, String lastName, String alias, 
 					Date dob, int gender, int licenseYear,
@@ -55,5 +56,13 @@ public class Doctor extends User {
         
 	public void setWorkAddresses(List<Address> addresses) {
 		workAddresses = addresses;
-	}        
+	}    
+
+	public void setAverageRating(double rating) {
+		averageRating = rating;
+	} 
+
+	public double getAverageRating() {
+		return averageRating;
+	} 
 }

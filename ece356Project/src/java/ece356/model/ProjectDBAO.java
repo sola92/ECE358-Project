@@ -795,7 +795,7 @@ public class ProjectDBAO {
             where += " AND averageRating =< " + averageRatingEnd;
         }     
 
-        if(averageRatingEnd == null && averageRatingStart == null) {
+        if(averageRatingEnd != null && averageRatingStart != null) {
             where += " AND averageRating BETWEEN " + averageRatingStart + " AND " + averageRatingEnd;
         }        
 
@@ -810,7 +810,11 @@ public class ProjectDBAO {
             connection = getConnection();
             statement  = connection.prepareStatement(QUERY);
             ResultSet resultSet = statement.executeQuery();
-            while(resultSet.next()) doctors.add(rowToDoctor(resultSet));
+            while(resultSet.next()) {
+                Doctor doctor = rowToDoctor(resultSet);
+                doctor.setAverageRating(resultSet.getDouble("averageRating"));
+                doctors.add(doctor);
+            }
         } finally {
             if (statement  != null) statement.close();
             if (connection != null) connection.close();

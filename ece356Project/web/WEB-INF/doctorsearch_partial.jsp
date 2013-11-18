@@ -15,6 +15,7 @@
   <thead>
     <th>Doctor#</th>  
     <th>Full Name</th>
+    <th>Average Rating</th>
     <th>Alias</th>
     <th>Gender</th> 
     <th>Specializations</th> 
@@ -27,6 +28,7 @@
         <tr>
             <td><%= d.getDoctorID() %></td>
             <td><%= d.getFullName() %></td>
+            <td><%= d.getAverageRating() %></td>
             <td><%= d.getAlias() %></td>
             <td><%= d.getGender() == Gender.Male ? "Male" : "Female" %></td>   
             <td>
