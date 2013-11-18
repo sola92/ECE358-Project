@@ -36,6 +36,10 @@
         <servlet-name>AddWorkAddressServlet</servlet-name>
         <servlet-class>ece356.servlet.AddWorkAddressServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RateDoctorServlet</servlet-name>
+        <servlet-class>ece356.servlet.RateDoctorServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>/static/*</url-pattern>
@@ -75,6 +79,10 @@
     <servlet-mapping>
         <servlet-name>AddWorkAddressServlet</servlet-name>
         <url-pattern>/AddWorkAddressServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RateDoctorServlet</servlet-name>
+        <url-pattern>/RateDoctorServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
