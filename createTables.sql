@@ -25,37 +25,27 @@ CREATE VIEW DocterProfileView AS
 
 /*SELECT * FROM DocterProfileView;*/
 
-
-SELECT *	
-    FROM Doctor AS d
-    NATURAL JOIN (
-    	SELECT 
-    	doctorID,
-        addressID   AS 	homeAddressID,
-		streetAddress AS  homeStreetAddress,
-		postalCode  AS  homePostalCode,
-		city 	    AS  homeCity,
-		province    AS  homeProvince
-		FROM Doctor NATURAL JOIN Address
-    ) ha
-    NATURAL JOIN (
-    	SELECT 
-    	doctorID,
-        addressID   	AS 	workAddressID,
-		streetAddress 	AS  workStreetAddress,
-		postalCode  	AS  workPostalCode,
-		city 	    	AS  workCity,
-		province    	AS  workProvince
-		FROM Doctor 
-		NATURAL JOIN WorkAddresses
-		NATURAL JOIN Address
-    ) wa 
-    NATURAL JOIN (
-    	SELECT AVG(rating) as averageRating, doctorID
-        FROM Review
-        GROUP BY doctorID
-    ) ar 
-    NATURAL JOIN Specialization
-    WHERE 1=1 AND (
-        SELECT COUNT(*) FROM Review WHERE doctorID = d.doctorID AND patientID IN (SELECT followeeID FROM Friendship WHERE followerID = 2)
-    ) > 0;
+SELECT 	DISTINCT u.*, d.*
+        FROM Doctor AS d
+        INNER JOIN User AS u ON d.doctorID = u.userID
+        NATURAL JOIN (
+            SELECT 
+            doctorID,
+            addressID   	AS 	workAddressID,
+                    streetAddress 	AS  workStreetAddress,
+                    postalCode  	AS  workPostalCode,
+                    city 	    	AS  workCity,
+                    province    	AS  workProvince
+                    FROM Doctor 
+                    NATURAL JOIN WorkAddresses
+                    NATURAL JOIN Address
+        ) wa 
+        NATURAL JOIN (
+            SELECT AVG(rating) as averageRating, doctorID
+            FROM Review
+            GROUP BY doctorID
+        ) ar 
+        NATURAL JOIN Specialization
+        WHERE 1=1 AND (
+            SELECT COUNT(*) FROM Review WHERE doctorID = d.doctorID AND patientID IN (SELECT followeeID FROM Friendship WHERE followerID = 2)
+        ) > 0;

@@ -52,7 +52,7 @@ public class ProjectDBAO {
         String firstName    = result.getString("firstName"); 
         Date dob            = result.getDate("dob");
         int gender          = result.getInt("gender");
-        int licenseYear        = result.getInt("licenseYear");
+        int licenseYear      = result.getInt("licenseYear");
         Address homeAddress = getAddress(result.getInt("homeAddressID"));
         return new Doctor(userID, firstName,lastName, alias, 
                    password, dob, gender, licenseYear,
@@ -166,46 +166,6 @@ public class ProjectDBAO {
         return patient;
     } 
 
-    public static Boolean userIsPatient(String _alias) throws ClassNotFoundException, SQLException {
-        Boolean isPatient           = false; 
-        Connection connection       = null;
-        PreparedStatement statement = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("SELECT COUNT(*) FROM Patient JOIN User ON Patient.patientID = User.userID WHERE alias = ?");
-            statement.setString(1, _alias);
-            ResultSet result = statement.executeQuery();
-            result.next();
-            isPatient = result.getInt("COUNT(*)") == 1;
-            statement.close();
-
-        } finally {
-            if (statement != null)   statement.close();
-            if (connection != null)  connection.close();
-        }
-        return isPatient;
-    } 
-
-    public static Boolean userIsDoctor(String _alias) throws ClassNotFoundException, SQLException {
-        Boolean isDoctor           = false; 
-        Connection connection       = null;
-        PreparedStatement statement = null;
-        try {
-            connection = getConnection();
-            statement = connection.prepareStatement("SELECT COUNT(*) FROM Doctor JOIN User ON Doctor.doctorID = User.userID WHERE alias = ?");
-            statement.setString(1, _alias);
-            ResultSet result = statement.executeQuery();
-            result.next();
-            isDoctor = result.getInt("COUNT(*)") == 1;
-            statement.close();
-
-        } finally {
-            if (statement != null)   statement.close();
-            if (connection != null)  connection.close();
-        }
-        return isDoctor;
-    } 
-    
     public static Administrator getAdminByAlias(String _alias) throws ClassNotFoundException, SQLException {
         Administrator administrator = null; 
         Connection connection       = null;
@@ -515,7 +475,7 @@ public class ProjectDBAO {
         return addressArray;
     }
 
-    public static User getDoctorByAlias(String _alias) throws ClassNotFoundException, SQLException {
+    public static Doctor getDoctorByAlias(String _alias) throws ClassNotFoundException, SQLException {
         Doctor doctor               = null; 
         Connection connection       = null;
         PreparedStatement statement = null;
@@ -524,9 +484,7 @@ public class ProjectDBAO {
             connection = getConnection();
             statement  = connection.prepareStatement(QUERY);
             statement.setString(1, _alias);
-//            statement.executeQuery();
             ResultSet result = statement.executeQuery();
-//            result.next();
             if (result.next()) {
                 Date dob         = result.getDate  ("dob");
                 int gender       = result.getInt   ("gender");            
@@ -539,14 +497,12 @@ public class ProjectDBAO {
                 Address homeAddress = getAddress(result.getInt("homeAddressID"));           
                 doctor = new Doctor(userID, firstName, lastName, alias, 
                                     password, dob, gender, licenseYear, homeAddress);
-                return doctor;
-            } else {
-                return null;
             }
         } finally {
             if (statement  != null) statement.close();
             if (connection != null) connection.close();
         }
+        return doctor;
     }
 
     public static int makeAddress(String streetAddress, String postalCode, String city, String province) 
@@ -578,7 +534,6 @@ public class ProjectDBAO {
             String streetAddress, String postalCode, 
             String city, String province, 
             Integer licenseYearStart, Integer licenseYearEnd,
-            Date dobStart, Date dobEnd, 
             Double averageRatingStart, Double averageRatingEnd,
             Boolean recommendedByFriend
         ) throws ClassNotFoundException, SQLException {
@@ -586,32 +541,28 @@ public class ProjectDBAO {
         Connection connection       = null;
         PreparedStatement statement = null;    
         String QUERY = 
-            "SELECT *	 " + 
-            "FROM Doctor AS d " + 
-            "NATURAL JOIN ( " + 
-                "SELECT  " + 
-                "doctorID, " +
-                "addressID   AS 	homeAddressID, " + 
-                        "streetAddress AS  homeStreetAddress, " + 
-                        "postalCode  AS  homePostalCode, " + 
-                        "city 	    AS  homeCity, " + 
-                        "province    AS  homeProvince " + 
-                        "FROM Doctor NATURAL JOIN Address " + 
-            ") ha " + 
-            "NATURAL JOIN ( " + 
-                "SELECT  " + 
-                "doctorID, " + 
-                "addressID   	AS 	workAddressID, " + 
-                        "streetAddress 	AS  workStreetAddress, " + 
-                        "postalCode  	AS  workPostalCode, " + 
-                        "city 	    	AS  workCity, " + 
-                        "province    	AS  workProvince " + 
-                        "FROM Doctor  " + 
-                        "NATURAL JOIN WorkAddresses " + 
-                        "NATURAL JOIN Address " + 
-            ") wa  " + 
-            "NATURAL JOIN Specialization " + 
-            "WHERE 1=1 ";
+            " SELECT DISTINCT u.*, d.* " +
+            " FROM Doctor AS d " +
+            " INNER JOIN User AS u ON d.doctorID = u.userID " +
+            " NATURAL JOIN ( " +
+                " SELECT  " +
+                " doctorID, " +
+                " addressID   	AS 	workAddressID, " +
+                        " streetAddress 	AS  workStreetAddress, " +
+                        " postalCode  	AS  workPostalCode, " +
+                        " city 	    	AS  workCity, " +
+                        " province    	AS  workProvince " +
+                        " FROM Doctor  " +
+                        " NATURAL JOIN WorkAddresses " +
+                        " NATURAL JOIN Address " +
+            " ) wa  " +
+            " NATURAL JOIN ( " +
+                " SELECT AVG(rating) as averageRating, doctorID " +
+                " FROM Review " +
+                " GROUP BY doctorID " +
+            " ) ar  " +
+            " NATURAL JOIN Specialization " +
+            " WHERE 1=1 ";
 
         String where = "";
 
@@ -645,16 +596,8 @@ public class ProjectDBAO {
 
         if(licenseYearEnd != null) {
             where += " AND licenseYear < " + licenseYearEnd;
-        }         
-
-        if(dobStart != null) {
-            where += " AND dob > " + dobStart;
-        }  
-
-        if(dobEnd != null) {
-            where += " AND dob < " + dobEnd;
-        } 
-
+        }        
+        
         if(averageRatingStart != null) {
             where += " AND averageRating > " + averageRatingStart;
         }  
