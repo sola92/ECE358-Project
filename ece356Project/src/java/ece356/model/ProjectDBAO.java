@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 
@@ -125,12 +124,13 @@ public class ProjectDBAO {
             statement = connection.prepareStatement("SELECT * FROM User WHERE alias = ?");
             statement.setString(1, alias);
             ResultSet result = statement.executeQuery();
-            result.next();
-            return (BCrypt.checkpw(password, result.getString("password")));
+            if( result.next() ) 
+            exists =  (BCrypt.checkpw(password, result.getString("password")));
         } finally {
             if (statement != null)   statement.close();
             if (connection != null)  connection.close();
         }
+        return exists;
     }
 
     public static Patient getPatientByAlias(String _alias) throws ClassNotFoundException, SQLException {
@@ -446,15 +446,13 @@ public class ProjectDBAO {
     
     public static void deleteReview(int reviewID) 
             throws ClassNotFoundException, SQLException {
-        if(followerID == followeeID) throw new IllegalArgumentException("user cannot follow themselves");
         Connection connection       = null;
         PreparedStatement statement = null;
+        final String QUERY          =  "DELETE FROM Review WHERE reviewID = ? ";
         try {
             connection = getConnection();
-            statement  = connection.prepareStatement(
-                            "INSERT INTO Friendship(followerID, followeeID) VALUES (?,?)");
-            statement.setInt(1, followerID);
-            statement.setInt(2, followeeID);
+            statement  = connection.prepareStatement(QUERY);
+            statement.setInt(1, reviewID);
             statement.executeUpdate();
         } finally {
             if (statement  != null) statement.close();
@@ -671,8 +669,10 @@ public class ProjectDBAO {
         try {
             connection = getConnection();
             statement  = connection.prepareStatement(QUERY);
-            ResultSet resultSet = statement.executeQuery(); 
-            while(resultSet.next()) reviews.add(rowToReview(resultSet));
+            ResultSet result = statement.executeQuery();
+            while(result.next()) {
+                reviews.add(rowToReview(result));
+            }
         } finally {
             if (statement  != null) statement.close();
             if (connection != null) connection.close();
@@ -688,7 +688,7 @@ public class ProjectDBAO {
             Integer licenseYearStart, Integer licenseYearEnd,
             Double averageRatingStart, Double averageRatingEnd,
             Boolean recommendedByFriend
-        ) throws ClassNotFoundException, SQLException {
+        ) throws ClassNotFoundException, SQLException {    
         ArrayList<Doctor> doctors = new ArrayList<Doctor>();
         Connection connection       = null;
         PreparedStatement statement = null;    
@@ -714,7 +714,7 @@ public class ProjectDBAO {
                         "RIGHT OUTER JOIN Doctor d2 ON d2.doctorID = r.doctorID " +
                         "GROUP BY doctorID " +
                     ") ar ON ar.doctorID = d.doctorID  " +
-                    "LEFT OUTER JOIN DoctorSpecialization s ON s.doctorID = d.doctorID  " +
+                    "LEFT OUTER JOIN DoctorSpecialization s ON s.doctorID = d.doctorID " +
             " WHERE 1=1 ";
 
         String where = "";
@@ -765,7 +765,7 @@ public class ProjectDBAO {
                      " ) " + (recommendedByFriend ? "> 0": " = 0");
         }            
         
-        QUERY += where;
+        QUERY += where; 
         try {
             connection = getConnection();
             statement  = connection.prepareStatement(QUERY);
@@ -801,6 +801,6 @@ public class ProjectDBAO {
             return sb.toString();
         } catch (java.security.NoSuchAlgorithmException e) {}
         return null;
-    }  
+    }      
 }
 
