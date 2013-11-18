@@ -88,8 +88,13 @@ public class DoctorSearchServlet extends HttpServlet {
            recommendedByFriend = Boolean.parseBoolean(strRecommendedByFriend);
         }  
 
+        Integer specialization = null;
+        String strSpecialization = request.getParameter("specialization");
+        if(strSpecialization != null && strSpecialization.trim() != "") {
+           specialization = Integer.parseInt(strSpecialization); 
+        }          
+
         try {
-            ProjectDBAO.getSpecializationsForDoctor(3);
             List<Doctor> doctors = ProjectDBAO.searchDoctors(
                 currentUserID,
                 firstName, lastName,
@@ -98,7 +103,8 @@ public class DoctorSearchServlet extends HttpServlet {
                 licenseYearStart, licenseYearEnd,
                 averageRatingStart, averageRatingEnd,
                 recommendedByFriend,
-                gender
+                gender,
+                specialization
             );
             request.setAttribute("doctors", doctors);
             request.getRequestDispatcher(PARTIAL_DOCTOR_SEARCH_JSP).forward(request, response);            

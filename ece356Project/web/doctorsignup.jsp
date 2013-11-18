@@ -1,10 +1,10 @@
-<%-- 
+    <%-- 
     Document   : doctorsignup
     Created on : Nov 16, 2013, 5:58:06 PM
     Author     : Sola
 --%>
 <%@page import="java.util.List"%>
-<%@page import="ece356.model.Specialization"%>
+    <%@page import="ece356.model.Specialization"%>
 <%@page import="ece356.model.ProjectDBAO"%>
 <%@page import="ece356.model.Gender"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -241,10 +241,20 @@
                   </div>   
                   <div class="form-group <%= homeAddressError %>">
                     <label for="homeProvince" class="col-sm-2 control-label">Province</label>
-                    <div class="col-sm-10">
-                      <input type="text" class="form-control" name="homeProvince"
-                            id="homeProvince" placeholder="Enter your province code">
-                    </div>                                
+                    <div class="col-sm-4">
+                      <select class="form-control" name="homeProvince" id="homeProvince">
+                          <option value="Ontario">Ontario</option>
+                          <option value="Québec">Québec</option>
+                          <option value="British Columbia">British Columbia</option>
+                          <option value="Alberta">Alberta</option>
+                          <option value="Nova Scotia">Nova Scotia</option>
+                          <option value="New Brunswick">New Brunswick</option>
+                          <option value="Manitoba">Manitoba</option>
+                          <option value="Saskatchewan">Saskatchewan</option>
+                          <option value="Prince Edward Island">Prince Edward Island</option>
+                          <option value="Newfoundland and Labrador">Newfoundland and Labrador</option>
+                      </select>  
+                    </div>                                                  
                   </div>                                                                                                   
                   <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">

@@ -56,9 +56,19 @@
                   <div class="form-group <%= workAddressError %>">
                     <label for="workProvince" class="col-sm-2 control-label">Province</label>
                     <div class="col-sm-10">
-                      <input type="text" class="form-control" name="workProvince" 
-                            id="workProvince" placeholder="Enter your province code">
-                    </div>                                
+                      <select class="form-control" name="workProvince" id="workProvince">
+                          <option value="Ontario">Ontario</option>
+                          <option value="Québec">Québec</option>
+                          <option value="British Columbia">British Columbia</option>
+                          <option value="Alberta">Alberta</option>
+                          <option value="Nova Scotia">Nova Scotia</option>
+                          <option value="New Brunswick">New Brunswick</option>
+                          <option value="Manitoba">Manitoba</option>
+                          <option value="Saskatchewan">Saskatchewan</option>
+                          <option value="Prince Edward Island">Prince Edward Island</option>
+                          <option value="Newfoundland and Labrador">Newfoundland and Labrador</option>
+                      </select> 
+                    </div>                                                    
                   </div>  
                                                                                                                     
                   <div class="form-group">

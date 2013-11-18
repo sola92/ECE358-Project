@@ -5,6 +5,8 @@
 --%>
 <%@page import="ece356.model.User"%>
 <%@page import="ece356.model.Gender"%>
+<%@page import="ece356.model.Specialization"%>
+<%@page import="ece356.model.ProjectDBAO"%>
 <%
     Object x = session.getAttribute("user");
     if(x == null || session.getAttribute("userIsPatient") == null || !(Boolean)session.getAttribute("userIsPatient")) {
@@ -35,7 +37,7 @@
             <form >
                 <div class="col-md-10 col-md-offset-1">
                     <div class="row well well-lg">  
-                        <div class="col-md-4 ">
+                        <div class="col-md-3 ">
                             <h4>Work Address</h4>
                             <div class="form-group">
                                 <label for="streetAddress">Street Address</label>
@@ -69,8 +71,8 @@
                                         id="postalCode" placeholder="Enter a postal code">
                             </div> 
                         </div>
-                        <div class="col-md-4 ">
-                            <h4>Personal/Professional Info</h4>
+                        <div class="col-md-3 ">
+                            <h4>Personal</h4>
                             <div class="form-group">
                                 <label for="postalCode">First Name</label>
                                 <input type="text" class="form-control" name="firstName" 
@@ -84,17 +86,20 @@
                           <div class="form-group">
                             <label for="gender">Gender</label>
                             <div class="col-sm-10">
-                              <label class="radio-inline">
+                              <label class="radio">
                                   <input type="radio" name="gender" id="gender" value="" checked> None
                               </label>                                
-                              <label class="radio-inline">
+                              <label class="radio">
                                   <input type="radio" name="gender" id="gender" value="<%= Gender.Male %>"> Male
                               </label>
-                              <label class="radio-inline">
+                              <label class="radio">
                                 <input type="radio" name="gender" id="gender" value="<%= Gender.Female %>"> Female
                               </label>                      
                             </div>
-                          </div> <br>                                  
+                          </div> <br>                                                                                                                       
+                        </div>
+                        <div class="col-md-3">
+                            <h4>Professional Info</h4>
                            <div class="form-group">
                                 <label for="licenseYearStart">Lowest License Year</label>
                                 <select name="licenseYearStart" class="form-control">
@@ -112,9 +117,20 @@
                                       <option value="<%= i %>"><%= i %></option>
                                     <% } %> 
                                 </select>  
-                            </div>                                                                                      
-                        </div>
-                        <div class="col-md-4">
+                            </div> 
+                            <div class="form-group">
+                                <label for="licenseYearEnd">Specialization</label>
+                                <select name="specialization" class="form-control">
+                                    <option value="">None</option>
+                                    <% for(Specialization s: ProjectDBAO.getSpecializations()) { %>
+                                        <option value="<%= s.getSpecID() %>">
+                                            <%= s.getName() %>
+                                        </option>
+                                    <% } %>
+                                </select>
+                            </div>                                                       
+                        </div>                        
+                        <div class="col-md-3">
                             <h4>Reviews</h4>
                             <div class="form-group">
                                 <label for="averageRatingStart">Lowest Average Rating</label>
@@ -139,7 +155,7 @@
                                 <br>
                                 <label class="radio-inline">
                                   <input type="radio" name="recommendedByFriend" 
-                                            id="recommendedByFriend" value="`    " checked> None
+                                            id="recommendedByFriend" value="" checked> None
                                 </label>
                                 <label class="radio-inline">
                                   <input type="radio" name="recommendedByFriend" 

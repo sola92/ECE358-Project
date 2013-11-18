@@ -710,13 +710,14 @@ public class ProjectDBAO {
             String city, String province, 
             Integer licenseYearStart, Integer licenseYearEnd,
             Double averageRatingStart, Double averageRatingEnd,
-            Boolean recommendedByFriend, Integer gender
+            Boolean recommendedByFriend, Integer gender,
+            Integer specialization
         ) throws ClassNotFoundException, SQLException {    
         ArrayList<Doctor> doctors = new ArrayList<Doctor>();
         Connection connection       = null;
         PreparedStatement statement = null;    
         String QUERY = 
-            "SELECT DISTINCT u.*, d.* " +
+            "SELECT DISTINCT u.*, d.*, ar.* " +
                     "FROM Doctor AS d " +
                     "INNER JOIN User AS u ON d.doctorID = u.userID " +
                     "LEFT OUTER JOIN ( " +
@@ -738,7 +739,7 @@ public class ProjectDBAO {
                         "GROUP BY doctorID " +
                     ") ar ON ar.doctorID = d.doctorID  " +
                     "LEFT OUTER JOIN DoctorSpecialization s ON s.doctorID = d.doctorID " +
-            " WHERE 1=1 ";
+                    " WHERE 1=1 ";
 
         String where = "";
 
@@ -756,29 +757,37 @@ public class ProjectDBAO {
             
         
         if(streetAddress != null && !streetAddress.equals("")) {
-            where += " AND wa.streetAddress LIKE '%" + streetAddress + "%'";
+            where += " AND workStreetAddress LIKE '%" + streetAddress + "%'";
         }
         
         if(postalCode != null && !postalCode.equals("")) {
-            where += " AND wa.postalCode LIKE '%" + postalCode + "%'";
-        }        
+            where += " AND workPostalCode LIKE '%" + postalCode + "%'";
+        }       
+
+        if(specialization != null) {
+            where += " AND specID = " + specialization;
+        }          
 
         if(city != null && !city.equals("")) {
-            where += " AND wa.city LIKE '%" + city + "'%";
+            where += " AND workCity LIKE '%" + city + "%'";
         }     
 
         if(province != null && !province.equals("")) {
-            where += " AND wa.province LIKE '%" + province + "'%";
+            where += " AND workProvince LIKE '%" + province + "%'";
         } 
 
-        if(licenseYearStart != null) {
+        if(licenseYearStart != null && licenseYearEnd == null) {
             where += " AND licenseYear >= " + licenseYearStart;
         } 
 
-        if(licenseYearEnd != null) {
+        if(licenseYearEnd != null && licenseYearStart == null) {
             where += " AND licenseYear =< " + licenseYearEnd;
         }        
         
+        if(licenseYearEnd != null && licenseYearStart != null) {
+            where += " AND licenseYear BETWEEN " + licenseYearStart + " AND " + licenseYearEnd;
+        } 
+
         if(averageRatingStart != null) {
             where += " AND averageRating >= " + averageRatingStart;
         }  
@@ -793,7 +802,7 @@ public class ProjectDBAO {
                      " ) " + (recommendedByFriend ? "> 0": " = 0");
         }            
         
-        QUERY += where + "ORDER BY averageRating DESC";
+        QUERY += where + " ORDER BY averageRating DESC";
         try {
             connection = getConnection();
             statement  = connection.prepareStatement(QUERY);
