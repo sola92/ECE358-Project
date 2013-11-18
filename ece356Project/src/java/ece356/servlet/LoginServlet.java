@@ -17,6 +17,7 @@ public class LoginServlet extends HttpServlet {
 
     final String LOGIN_JSP = "index.jsp";
     final String PATIENT_HOME_JSP = "patienthome.jsp";
+    final String DOCTOR_HOME_JSP = "doctorhome.jsp";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -35,10 +36,20 @@ public class LoginServlet extends HttpServlet {
             Boolean userExists = ProjectDBAO.verifyUserExists(alias, password);
             if(userExists) {
                 HttpSession session = request.getSession(true);
-                User u = ProjectDBAO.getPatientByAlias(alias);
-                session.setAttribute("user", u);
-                session.setAttribute("userIsPatient", true);
-                response.sendRedirect(PATIENT_HOME_JSP);
+                
+                if(ProjectDBAO.userIsPatient(alias)) {
+                    User u = ProjectDBAO.getPatientByAlias(alias);
+                    session.setAttribute("user", u);
+                    session.setAttribute("userIsPatient", true);
+                    response.sendRedirect(PATIENT_HOME_JSP);
+                } else if(ProjectDBAO.userIsDoctor(alias)) {
+                    User u = ProjectDBAO.getDoctorByAlias(alias);
+                    session.setAttribute("user", u);
+                    session.setAttribute("userIsDoctor", true);
+                    response.sendRedirect(DOCTOR_HOME_JSP);
+                } else {    //is administrator
+                    
+                }
             } else {
                 request.setAttribute("errorWithLogin", true);
                 request.setAttribute("alias", alias);
