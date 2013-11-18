@@ -717,7 +717,7 @@ public class ProjectDBAO {
                      " ) " + (recommendedByFriend ? "> 0": " = 0");
         }            
         
-        QUERY += where;
+        QUERY += where + "ORDER BY averageRating DESC";
         try {
             connection = getConnection();
             statement  = connection.prepareStatement(QUERY);
