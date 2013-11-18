@@ -25,6 +25,10 @@
         <servlet-class>ece356.servlet.CreateReviewServlet</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>DoctorHomeSevlet</servlet-name>
+        <servlet-class>ece356.servlet.DoctorHomeSevlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>DoctorSearchServlet</servlet-name>
         <servlet-class>ece356.servlet.DoctorSearchServlet</servlet-class>
     </servlet>
@@ -55,6 +59,10 @@
     <servlet-mapping>
         <servlet-name>CreateReviewServlet</servlet-name>
         <url-pattern>/CreateReviewServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoctorHomeSevlet</servlet-name>
+        <url-pattern>/DoctorHomeSevlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DoctorSearchServlet</servlet-name>

@@ -49,7 +49,7 @@ CREATE TABLE Doctor(
 	doctorID 		INT,
 	gender 			SMALLINT, 
 	dob 			DATE, 
-	homeAddressID  	VARCHAR(100), 
+	homeAddressID  	INT, 
 	licenseYear 	INT,
     PRIMARY KEY (doctorID),
     FOREIGN KEY (homeAddressID) REFERENCES Address(addressID),

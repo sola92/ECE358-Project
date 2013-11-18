@@ -37,12 +37,12 @@ public class LoginServlet extends HttpServlet {
             if(userExists) {
                 HttpSession session = request.getSession(true);
                 
-                if(ProjectDBAO.userIsPatient(alias)) {
+                if(false) {
                     User u = ProjectDBAO.getPatientByAlias(alias);
                     session.setAttribute("user", u);
                     session.setAttribute("userIsPatient", true);
                     response.sendRedirect(PATIENT_HOME_JSP);
-                } else if(ProjectDBAO.userIsDoctor(alias)) {
+                } else if(true) {
                     User u = ProjectDBAO.getDoctorByAlias(alias);
                     session.setAttribute("user", u);
                     session.setAttribute("userIsDoctor", true);
