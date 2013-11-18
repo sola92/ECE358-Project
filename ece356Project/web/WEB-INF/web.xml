@@ -24,6 +24,10 @@
         <servlet-name>CreateReviewServlet</servlet-name>
         <servlet-class>ece356.servlet.CreateReviewServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DoctorSearchServlet</servlet-name>
+        <servlet-class>ece356.servlet.DoctorSearchServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>/static/*</url-pattern>
@@ -51,6 +55,10 @@
     <servlet-mapping>
         <servlet-name>CreateReviewServlet</servlet-name>
         <url-pattern>/CreateReviewServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DoctorSearchServlet</servlet-name>
+        <url-pattern>/DoctorSearch</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

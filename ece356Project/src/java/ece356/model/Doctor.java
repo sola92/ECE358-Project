@@ -13,11 +13,11 @@ import java.util.Date;
 public class Doctor extends User {
 	protected final Date dob;
 	protected final int  gender;
-	protected final Date licenseYear;
+	protected final int licenseYear;
 	protected final Address homeAddress;
 
 	public Doctor(	int userID, String firstName, String lastName, String alias, 
-					String password, Date dob, int gender, Date licenseYear,
+					String password, Date dob, int gender, int licenseYear,
 					Address homeAddress ) {
 		super(userID, firstName, lastName, alias, password);
 		this.dob         = dob;
@@ -38,7 +38,7 @@ public class Doctor extends User {
 		return getUserID();
 	}
 
-	public Date getLicenseYear() {
+	public int getLicenseYear() {
 		return licenseYear;
 	}
 

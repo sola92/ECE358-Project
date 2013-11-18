@@ -33,7 +33,7 @@
                   <a href="patientsearch.jsp" class="list-group-item active">
                     Find Other Patients
                   </a>
-                  <a href="#" class="list-group-item">Search For Doctors</a>
+                  <a href="doctorsearch.jsp" class="list-group-item">Search For Doctors</a>
                 </div>         
             </div>  
         </div> 

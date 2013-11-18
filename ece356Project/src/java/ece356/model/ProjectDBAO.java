@@ -23,18 +23,6 @@ public class ProjectDBAO {
     public static final String user = "user_" + nid;
     public static final String pwd = "user_" + nid;
     
-    public static void testConnection()
-            throws ClassNotFoundException, SQLException {
-        Connection con = null;
-        try {
-            con = getConnection();
-        } finally {
-            if (con != null) {
-                con.close();
-            }
-        }
-    }
-    
     private static Patient rowToPatient(ResultSet result) throws SQLException {
         int userID       = result.getInt("userID");
         String email     = result.getString("email");
@@ -53,8 +41,25 @@ public class ProjectDBAO {
         String firstName = result.getString("firstName");   
         return new Administrator(userID, firstName, lastName, alias, password);    
     }    
+
+    private static Doctor rowToDoctor(ResultSet result) 
+        throws ClassNotFoundException, SQLException {
+        int userID          = result.getInt("userID");
+        String email        = result.getString("email");
+        String alias        = result.getString("alias");
+        String lastName     = result.getString("lastName");
+        String password     = result.getString("password");
+        String firstName    = result.getString("firstName"); 
+        Date dob            = result.getDate("dob");
+        int gender          = result.getInt("gender");
+        int licenseYear        = result.getInt("licenseYear");
+        Address homeAddress = getAddress(result.getInt("homeAddressID"));
+        return new Doctor(userID, firstName,lastName, alias, 
+                   password, dob, gender, licenseYear,
+                    homeAddress);    
+    }    
     
-    public static Connection getConnection()
+    private static Connection getConnection()
             throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection(url, user, pwd);
@@ -126,6 +131,26 @@ public class ProjectDBAO {
         } finally {
             if (statement != null)   statement.close();
             if (connection != null)  connection.close();
+        }
+        return patient;
+    } 
+
+   public static Patient getPatientByID(String patientID) throws ClassNotFoundException, SQLException {
+        Patient patient             = null; 
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        final String QUERY = "SELECT * from Patient JOIN User ON Patient.patientID = User.userID WHERE patientID = ?";
+        try {
+             connection = getConnection();
+             statement  = connection.prepareStatement(QUERY);
+             statement.setString(1, patientID);
+             ResultSet result = statement.executeQuery();
+             result.next();
+             patient = rowToPatient(result);
+             statement.close();
+        } finally {
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
         }
         return patient;
     } 
@@ -330,6 +355,26 @@ public class ProjectDBAO {
         return userID;   
     }
 
+    public static Doctor getDoctorByID(String doctorID) throws ClassNotFoundException, SQLException {
+        Doctor doctor               = null; 
+        Connection connection       = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getConnection();
+            statement  = connection.prepareStatement("SELECT * from Doctor JOIN User ON Doctor.doctorID = User.userID WHERE doctorID = ?");
+            statement.setString(1, doctorID);
+            ResultSet result = statement.executeQuery();
+            result.next();
+            doctor = rowToDoctor(result);
+            statement.close();
+
+        } finally {
+            if (statement != null)   statement.close();
+            if (connection != null)  connection.close();
+        }
+        return doctor;
+    } 
+
     public static void addSpecialization(int doctorID, int[] specializations) 
         throws ClassNotFoundException, SQLException {
         Connection connection       = null;
@@ -414,7 +459,7 @@ public class ProjectDBAO {
             String lastName  = result.getString("lastName");
             String password  = result.getString("password");
             String firstName = result.getString("firstName");
-            Date licenseYear = result.getDate  ("gender");
+            int licenseYear  = result.getInt  ("licenseYear");
             Address homeAddress = getAddress(result.getInt("addressID"));           
             doctor = new Doctor(userID, firstName, lastName, alias, 
                                 password, dob, gender, licenseYear, homeAddress);    
@@ -446,6 +491,128 @@ public class ProjectDBAO {
             if (connection != null) connection.close();
         }            
         return addressID;
+    }
+
+    public static List<Doctor> searchDoctors(
+            int currentUserID,
+            String firstName,     String lastName,
+            String streetAddress, String postalCode, 
+            String city, String province, 
+            Integer licenseYearStart, Integer licenseYearEnd,
+            Date dobStart, Date dobEnd, 
+            Double averageRatingStart, Double averageRatingEnd,
+            Boolean recommendedByFriend
+        ) throws ClassNotFoundException, SQLException {
+        ArrayList<Doctor> doctors = new ArrayList<Doctor>();
+        Connection connection       = null;
+        PreparedStatement statement = null;    
+        String QUERY = 
+            "SELECT *	 " + 
+            "FROM Doctor AS d " + 
+            "NATURAL JOIN ( " + 
+                "SELECT  " + 
+                "doctorID, " +
+                "addressID   AS 	homeAddressID, " + 
+                        "streetAddress AS  homeStreetAddress, " + 
+                        "postalCode  AS  homePostalCode, " + 
+                        "city 	    AS  homeCity, " + 
+                        "province    AS  homeProvince " + 
+                        "FROM Doctor NATURAL JOIN Address " + 
+            ") ha " + 
+            "NATURAL JOIN ( " + 
+                "SELECT  " + 
+                "doctorID, " + 
+                "addressID   	AS 	workAddressID, " + 
+                        "streetAddress 	AS  workStreetAddress, " + 
+                        "postalCode  	AS  workPostalCode, " + 
+                        "city 	    	AS  workCity, " + 
+                        "province    	AS  workProvince " + 
+                        "FROM Doctor  " + 
+                        "NATURAL JOIN WorkAddresses " + 
+                        "NATURAL JOIN Address " + 
+            ") wa  " + 
+            "NATURAL JOIN Specialization " + 
+            "WHERE 1=1 ";
+
+        String where = "";
+
+        if(lastName != null) {
+            where += " AND lastName = '" + lastName + "'";
+        }
+        
+        if(firstName != null) {
+            where += " AND firstName = '" + firstName + "'";
+        }      
+        
+        if(streetAddress != null) {
+            where += " AND streetAddress = '" + streetAddress + "'";
+        }
+        
+        if(postalCode != null) {
+            where += " AND postalCode = '" + postalCode + "'";
+        }        
+
+        if(city != null) {
+            where += " AND city = '" + city + "'";
+        }     
+
+        if(province != null) {
+            where += " AND province = '" + province + "'";
+        } 
+
+        if(licenseYearStart != null) {
+            where += " AND licenseYear > " + licenseYearStart;
+        } 
+
+        if(licenseYearEnd != null) {
+            where += " AND licenseYear < " + licenseYearEnd;
+        }         
+
+        if(dobStart != null) {
+            where += " AND dob > " + dobStart;
+        }  
+
+        if(dobEnd != null) {
+            where += " AND dob < " + dobEnd;
+        } 
+
+        if(averageRatingStart != null) {
+            where += " AND averageRating > " + averageRatingStart;
+        }  
+
+        if(averageRatingEnd != null) {
+            where += " AND averageRating < " + averageRatingEnd;
+        }     
+
+        if(recommendedByFriend != null) {
+            where += " AND (SELECT COUNT(*) FROM Review WHERE doctorID = d.doctorID AND patientID " + 
+                     " IN (SELECT followeeID FROM Friendship WHERE followerID = " + averageRatingEnd + ") " + 
+                     " ) " + (recommendedByFriend ? "> 0": " = 0");
+        }            
+        
+        QUERY += where;
+        try {
+            connection = getConnection();
+            statement  = connection.prepareStatement(QUERY);
+            ResultSet resultSet = statement.executeQuery();
+            while(resultSet.next()) doctors.add(rowToDoctor(resultSet));
+        } finally {
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
+        }            
+        return doctors;
+    }    
+
+    private static void testConnection()
+            throws ClassNotFoundException, SQLException {
+        Connection con = null;
+        try {
+            con = getConnection();
+        } finally {
+            if (con != null) {
+                con.close();
+            }
+        }
     }
 
     private static String MD5(String md5) {

@@ -48,7 +48,7 @@
             $(document).ready(function () {
                 window.FOLLOW = function (elem) {
                     elem = $(elem);
-                    var followerID = window.CURRENT_USER_ID
+                    var followerID = window.CURRENT_USER_ID,
                         followeeID = elem.data("p-id");
                     $.ajax({
                       url: "FollowPatient",
