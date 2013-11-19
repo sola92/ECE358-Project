@@ -80,12 +80,34 @@
                       data: { "reviewID": $(elem).data('r-id') }
                     }).done(function() {
                         $(elem).parent().parent().fadeOut();
+                    }).error(function () {
+                        alert("The review has already been deleted");
+                        $(elem).parent().parent().fadeOut();
                     });
                 };
 
                 $('#searchButton').click(function() {
-                    var data = $('form').serialize();
-                    console.log(data);
+                    var data = $('form').serialize(),
+                        regex = (new RegExp("[0-9]{4}-[0-9]{2}-[0-9]{2}")),
+                        startDate = $('input[name="startDate"]').val().trim(),
+                        endDate = $('input[name="endDate"]').val().trim(),
+                        hasError = false;
+                    if(startDate !== "" && !regex.test(startDate)) {
+                        $('input[name="startDate"]').parent().addClass('has-error');
+                        hasError = true;
+                    } else {
+                        $('input[name="startDate"]').parent().removeClass();
+                    }
+
+                    if(endDate !== "" && !regex.test(endDate)) {
+                        $('input[name="endDate"]').parent().addClass('has-error');
+                        hasError = true;
+                    } else {
+                        $('input[name="endDate"]').parent().removeClass();
+                    }   
+
+                    if(hasError) return;                
+                    //console.log(data);
                     $.ajax({
                       url: "SearchReview",
                       type: "POST",

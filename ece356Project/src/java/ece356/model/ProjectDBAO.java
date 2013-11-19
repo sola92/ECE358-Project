@@ -475,22 +475,37 @@ public class ProjectDBAO {
             if (connection != null) connection.close();
         }            
     }           
-    
-    public static void deleteReview(int reviewID) 
-            throws ClassNotFoundException, SQLException {
-        Connection connection       = null;
-        PreparedStatement statement = null;
-        final String QUERY          = "DELETE FROM Review WHERE reviewID = ? ";
+
+    public static boolean deleteReview(int reviewID) 
+            throws ClassNotFoundException, SQLException {                   
+        Connection connection        = null;
+        PreparedStatement statement1 = null;
+        PreparedStatement statement2 = null;
+        final String DELETE_QUERY    = "DELETE FROM Review WHERE reviewID = ? ";
+        final String SELECT_QUERY    = "SELECT COUNT(*) FROM Review WHERE reviewID = ? ";
+        boolean foundReview = false;
         try {
             connection = getConnection();
-            statement  = connection.prepareStatement(QUERY);
-            statement.setInt(1, reviewID);
-            statement.executeUpdate();
+            connection.setAutoCommit(false);
+            connection.setTransactionIsolation(Connection.TRANSACTION_REPEATABLE_READ); 
+            statement1 = connection.prepareStatement(SELECT_QUERY);
+            statement1.setInt(1, reviewID);
+            ResultSet result1 = statement1.executeQuery(); result1.next();
+            int count = result1.getInt("COUNT(*)");
+            foundReview = count == 1;
+            if(foundReview) {
+                statement2 = connection.prepareStatement(DELETE_QUERY);
+                statement2.setInt(1, reviewID);        
+                statement2.executeUpdate();       
+            } 
+            connection.commit();
         } finally {
-            if (statement  != null) statement.close();
+            if (statement1 != null) statement1.close();
+            if (statement2 != null) statement2.close();
             if (connection != null) connection.close();
-        }            
-    }  
+        }     
+        return foundReview;
+    }     
 
     public static int makeDoctor( Connection connection,
                 String firstName, String lastName, String alias, String password, 

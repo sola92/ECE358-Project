@@ -31,7 +31,8 @@ public class DeleteReviewServlet extends HttpServlet {
         }              	
         int review = Integer.parseInt(request.getParameter("reviewID"));
         try {
-            ProjectDBAO.deleteReview(review);
+            if(!ProjectDBAO.deleteReview(review))
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
         } catch (Exception ex) {
             throw new ServletException(ex);
         }
