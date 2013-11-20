@@ -129,7 +129,6 @@ INSERT INTO Specialization(name) VALUES ('Emergency physician');
 INSERT INTO Specialization(name) VALUES ('Endocrinologists');
 INSERT INTO Specialization(name) VALUES ('Euthanasia doctor');
 INSERT INTO Specialization(name) VALUES ('Physician');
-INSERT INTO Specialization(name) VALUES ('Physician');
 INSERT INTO Specialization(name) VALUES ('Surgeons of Glasgo');
 INSERT INTO Specialization(name) VALUES ('Physicians of Edinburg');
 INSERT INTO Specialization(name) VALUES ('Surgeons of Edinburg');
