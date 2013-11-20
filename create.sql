@@ -118,58 +118,59 @@ CREATE TABLE Friendship(
 		ON DELETE CASCADE	
 );
 
-INSERT INTO Specialization(name) VALUES ('Anesthesiologists');
-INSERT INTO Specialization(name) VALUES ('Cardiologists');
-INSERT INTO Specialization(name) VALUES ('Coroners');
-INSERT INTO Specialization(name) VALUES ('Dentists');
-INSERT INTO Specialization(name) VALUES ('Dermatologists');
-INSERT INTO Specialization(name) VALUES ('Diabetologists');
-INSERT INTO Specialization(name) VALUES ('Emergency physicians');
+INSERT INTO Specialization(name) VALUES ('Allergologist');
+INSERT INTO Specialization(name) VALUES ('Anesthesiologist');
+INSERT INTO Specialization(name) VALUES ('Cardiologist');
+INSERT INTO Specialization(name) VALUES ('Coroner');
+INSERT INTO Specialization(name) VALUES ('Dentist');
+INSERT INTO Specialization(name) VALUES ('Dermatologist');
+INSERT INTO Specialization(name) VALUES ('Diabetologist');
+INSERT INTO Specialization(name) VALUES ('Emergency physician');
 INSERT INTO Specialization(name) VALUES ('Endocrinologists');
-INSERT INTO Specialization(name) VALUES ('Euthanasia doctors');
-INSERT INTO Specialization(name) VALUES ('Physicians');
-INSERT INTO Specialization(name) VALUES ('Physicians');
-INSERT INTO Specialization(name) VALUES ('Surgeons of Glasgow');
-INSERT INTO Specialization(name) VALUES ('Physicians of Edinburgh');
-INSERT INTO Specialization(name) VALUES ('Surgeons of Edinburgh');
-INSERT INTO Specialization(name) VALUES ('Gastroenterologists');
-INSERT INTO Specialization(name) VALUES ('General practitioners');
-INSERT INTO Specialization(name) VALUES ('Gynaecologists');
-INSERT INTO Specialization(name) VALUES ('Hematologists');
-INSERT INTO Specialization(name) VALUES ('High-altitude medicine physicians');
-INSERT INTO Specialization(name) VALUES ('Hygienists');
-INSERT INTO Specialization(name) VALUES ('Immunologists');
-INSERT INTO Specialization(name) VALUES ('Internists');
-INSERT INTO Specialization(name) VALUES ('Leprologists');
-INSERT INTO Specialization(name) VALUES ('Military physicians');
-INSERT INTO Specialization(name) VALUES ('Nephrologists');
-INSERT INTO Specialization(name) VALUES ('Neurologists');
-INSERT INTO Specialization(name) VALUES ('Neurosurgeons');
-INSERT INTO Specialization(name) VALUES ('Nuclear medicine physicians');
-INSERT INTO Specialization(name) VALUES ('Obstetricians');
-INSERT INTO Specialization(name) VALUES ('Oncologists');
-INSERT INTO Specialization(name) VALUES ('Ophthalmologists');
-INSERT INTO Specialization(name) VALUES ('Orthopaedists');
-INSERT INTO Specialization(name) VALUES ('Osteopathic physicians');
-INSERT INTO Specialization(name) VALUES ('Otolaryngologists');
-INSERT INTO Specialization(name) VALUES ('Paleopathologists');
-INSERT INTO Specialization(name) VALUES ('Parasitologists');
-INSERT INTO Specialization(name) VALUES ('Pathologists');
-INSERT INTO Specialization(name) VALUES ('Pediatricians');
-INSERT INTO Specialization(name) VALUES ('Phthisiatrists');
-INSERT INTO Specialization(name) VALUES ('Podiatrists');
-INSERT INTO Specialization(name) VALUES ('Psychiatrists');
-INSERT INTO Specialization(name) VALUES ('Pulmonologists');
-INSERT INTO Specialization(name) VALUES ('Radiologists');
-INSERT INTO Specialization(name) VALUES ('Rheumatologists');
-INSERT INTO Specialization(name) VALUES ('Serologists');
-INSERT INTO Specialization(name) VALUES ('Surgeons');
-INSERT INTO Specialization(name) VALUES ('Team physicians');
-INSERT INTO Specialization(name) VALUES ('Toxicologists');
-INSERT INTO Specialization(name) VALUES ('Traumatologists');
-INSERT INTO Specialization(name) VALUES ('Tropical physicians');
-INSERT INTO Specialization(name) VALUES ('Urologists');
-INSERT INTO Specialization(name) VALUES ('Venereologists');
+INSERT INTO Specialization(name) VALUES ('Euthanasia doctor');
+INSERT INTO Specialization(name) VALUES ('Physician');
+INSERT INTO Specialization(name) VALUES ('Physician');
+INSERT INTO Specialization(name) VALUES ('Surgeons of Glasgo');
+INSERT INTO Specialization(name) VALUES ('Physicians of Edinburg');
+INSERT INTO Specialization(name) VALUES ('Surgeons of Edinburg');
+INSERT INTO Specialization(name) VALUES ('Gastroenterologist');
+INSERT INTO Specialization(name) VALUES ('General practitioner');
+INSERT INTO Specialization(name) VALUES ('Gynaecologist');
+INSERT INTO Specialization(name) VALUES ('Hematologist');
+INSERT INTO Specialization(name) VALUES ('High-altitude medicine physician');
+INSERT INTO Specialization(name) VALUES ('Hygienist');
+INSERT INTO Specialization(name) VALUES ('Immunologist');
+INSERT INTO Specialization(name) VALUES ('Internist');
+INSERT INTO Specialization(name) VALUES ('Leprologist');
+INSERT INTO Specialization(name) VALUES ('Military physician');
+INSERT INTO Specialization(name) VALUES ('Nephrologist');
+INSERT INTO Specialization(name) VALUES ('Neurologist');
+INSERT INTO Specialization(name) VALUES ('Neurosurgeon');
+INSERT INTO Specialization(name) VALUES ('Nuclear medicine physician');
+INSERT INTO Specialization(name) VALUES ('Obstetrician');
+INSERT INTO Specialization(name) VALUES ('Oncologist');
+INSERT INTO Specialization(name) VALUES ('Ophthalmologist');
+INSERT INTO Specialization(name) VALUES ('Orthopaedist');
+INSERT INTO Specialization(name) VALUES ('Osteopathic physician');
+INSERT INTO Specialization(name) VALUES ('Otolaryngologist');
+INSERT INTO Specialization(name) VALUES ('Paleopathologist');
+INSERT INTO Specialization(name) VALUES ('Parasitologist');
+INSERT INTO Specialization(name) VALUES ('Pathologist');
+INSERT INTO Specialization(name) VALUES ('Pediatrician');
+INSERT INTO Specialization(name) VALUES ('Phthisiatrist');
+INSERT INTO Specialization(name) VALUES ('Podiatrist');
+INSERT INTO Specialization(name) VALUES ('Psychiatrist');
+INSERT INTO Specialization(name) VALUES ('Pulmonologist');
+INSERT INTO Specialization(name) VALUES ('Radiologist');
+INSERT INTO Specialization(name) VALUES ('Rheumatologist');
+INSERT INTO Specialization(name) VALUES ('Serologist');
+INSERT INTO Specialization(name) VALUES ('Surgeon');
+INSERT INTO Specialization(name) VALUES ('Team physician');
+INSERT INTO Specialization(name) VALUES ('Toxicologist');
+INSERT INTO Specialization(name) VALUES ('Traumatologist');
+INSERT INTO Specialization(name) VALUES ('Tropical physician');
+INSERT INTO Specialization(name) VALUES ('Urologist');
+INSERT INTO Specialization(name) VALUES ('Venereologist');
 
 
 
@@ -179,12 +180,6 @@ CREATE INDEX doctor_licenseYear USING BTREE ON Doctor(licenseYear);
 CREATE INDEX user_lastName 	USING HASH ON User(lastName);
 CREATE INDEX user_firstName USING HASH ON User(firstName);
 
-CREATE INDEX user_city 		 	USING HASH ON Address(city);
-CREATE INDEX user_province 		USING HASH ON Address(province);
-CREATE INDEX user_postalCode 	USING HASH ON Address(postalCode);
-CREATE INDEX user_streetAddress USING HASH ON Address(streetAddress);
-
-CREATE INDEX specialization_name USING HASH ON Specialization(name);
 
 CREATE VIEW PatientProfileView AS 
 SELECT 	
@@ -209,7 +204,6 @@ SELECT
 FROM Doctor AS d 
 INNER JOIN User AS u ON d.doctorID = u.userID;
 
-/*
 SELECT 	DISTINCT u.*, d.*
         FROM Doctor AS d
         INNER JOIN User AS u ON d.doctorID = u.userID
@@ -232,6 +226,8 @@ SELECT 	DISTINCT u.*, d.*
             GROUP BY doctorID
         ) ar ON ar.doctorID = d.doctorID 
         LEFT OUTER JOIN DoctorSpecialization s ON s.doctorID = d.doctorID 
-        WHERE 1=1 AND u.firstName = 'asdopi';*/
+        WHERE 1=1 AND firstName = 'foo' AND lastName = 'foo'
+        AND gender = 1 AND workStreetAddress = 'foo' AND workPostalCode = 'foo'
+        AND workCity = 'foo' AND workProvince = 'foo' AND licenseYear >= 1990;
 
 

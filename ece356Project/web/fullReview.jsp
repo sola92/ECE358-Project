@@ -50,7 +50,7 @@
         <br></br><br></br>
         <div class="row">
             <div class="col-md-8">
-                <%if(reviews.size()>0) {%>
+                <%if(reviews.size() > 0) {%>
                 <h3>Reviews for <%= d.getFullName() %> </h3>
                 
                 <table class="table table-striped">
