@@ -116,12 +116,12 @@ public class ProjectDBAO {
 
     public static Boolean verifyUserExists(String alias, String password) 
             throws ClassNotFoundException, SQLException {
-        Boolean exists = false;
-        Connection connection   = null;
+        Boolean     exists          = false;
+        Connection  connection      = null;
         PreparedStatement statement = null;
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("SELECT * FROM User WHERE alias = ?");
+            statement  = connection.prepareStatement("SELECT * FROM User WHERE alias = ?");
             statement.setString(1, alias);
             ResultSet result = statement.executeQuery();
             if( result.next() ) 
@@ -134,8 +134,8 @@ public class ProjectDBAO {
     }
 
     public static Patient getPatientByAlias(String _alias) throws ClassNotFoundException, SQLException {
-        Patient patient             = null; 
-        Connection connection       = null;
+        Patient     patient         = null; 
+        Connection  connection      = null;
         PreparedStatement statement = null;
         _alias = _alias.toLowerCase();
         try {
@@ -235,18 +235,18 @@ public class ProjectDBAO {
     
     public static List<Patient> searchPatientsByAlias(int currentUserID, String alias)
             throws ClassNotFoundException, SQLException {
-        ArrayList<Patient> patients = new ArrayList<Patient>();
+        alias = alias.toLowerCase();                
         if(alias == null || alias.trim() == "") return patients;
-        alias = alias.toLowerCase();
         Connection connection       = null;
         PreparedStatement statement = null;        
+        ArrayList<Patient> patients = new ArrayList<Patient>();
         final String query = "SELECT * FROM ( " +
             "SELECT * FROM PatientProfileView " +
             "WHERE alias LIKE ? AND patientID <> ? " +
         ") AS p " +
         "WHERE (SELECT COUNT(*) FROM Friendship WHERE followerID = ? AND followeeID = p.patientID) = 0 ";
         try {
-            connection   = getConnection();
+            connection   = getConnection(); 
             statement    = connection.prepareStatement(query);
             statement.setString(1, "%" + alias + "%");
             statement.setInt(2, currentUserID);
@@ -261,41 +261,41 @@ public class ProjectDBAO {
     }    
 
     public static Boolean userIsPatient(String _alias) throws ClassNotFoundException, SQLException {
+        _alias = _alias.toLowerCase();
         Boolean isPatient           = false; 
         Connection connection       = null;
         PreparedStatement statement = null;
-        _alias = _alias.toLowerCase();
+        final String QUERY = "SELECT COUNT(*) FROM PatientProfileView WHERE alias = ?";
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("SELECT COUNT(*) FROM PatientProfileView WHERE alias = ?");
+            statement  = connection.prepareStatement(QUERY);
             statement.setString(1, _alias);
-            ResultSet result = statement.executeQuery();
-            result.next();
+            ResultSet result = statement.executeQuery(); result.next();
             isPatient = result.getInt("COUNT(*)") == 1;
             statement.close();
         } finally {
-            if (statement != null)   statement.close();
-            if (connection != null)  connection.close();
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
         }
         return isPatient;
     } 
 
     public static Boolean userIsDoctor(String _alias) throws ClassNotFoundException, SQLException {
-        Boolean isDoctor           = false; 
+        Boolean isDoctor            = false; 
         Connection connection       = null;
         PreparedStatement statement = null;
+        final String QUERY = "SELECT COUNT(*) FROM Doctor JOIN User ON Doctor.doctorID = User.userID WHERE alias = ?";
         _alias = _alias.toLowerCase();
         try {
             connection = getConnection();
-            statement = connection.prepareStatement("SELECT COUNT(*) FROM Doctor JOIN User ON Doctor.doctorID = User.userID WHERE alias = ?");
+            statement  = connection.prepareStatement(QUERY);
             statement.setString(1, _alias);
-            ResultSet result = statement.executeQuery();
-            result.next();
+            ResultSet result = statement.executeQuery();result.next();
             isDoctor = result.getInt("COUNT(*)") == 1;
             statement.close();
         } finally {
-            if (statement != null)   statement.close();
-            if (connection != null)  connection.close();
+            if (statement  != null) statement.close();
+            if (connection != null) connection.close();
         }
         return isDoctor;
     }     
@@ -303,20 +303,17 @@ public class ProjectDBAO {
     private static int makeUser(Connection connection, String firstName, 
                 String lastName, String alias, String password)
                         throws ClassNotFoundException, SQLException {
-        PreparedStatement statement = null;  
-        int userID = 0;                
         alias = alias.toLowerCase();        
-        String query = "INSERT INTO User(firstName, lastName, alias, password) VALUES(?,?,?,?)";
-        statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        String hashed = BCrypt.hashpw(password, BCrypt.gensalt(12));
+        PreparedStatement statement = null;  
+        final String QUERY = "INSERT INTO User(firstName, lastName, alias, password) VALUES(?,?,?,?)";
+        statement = connection.prepareStatement(QUERY, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, firstName);
         statement.setString(2, lastName);
         statement.setString(3, alias);
-        String hashed = BCrypt.hashpw(password, BCrypt.gensalt(12));
         statement.setString(4, hashed);
         statement.executeUpdate();
-        ResultSet rs = statement.getGeneratedKeys(); rs.next();
-        userID = rs.getInt(1);            
-        return userID;
+        return statement.getGeneratedKeys().next().getInt(1);
     }
     
     public static int makePatient(String firstName, String lastName, String alias, String password, String email)
