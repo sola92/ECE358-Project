@@ -716,11 +716,11 @@ public class ProjectDBAO {
                     "LEFT OUTER JOIN ( " +
                         "SELECT  " +
                             "doctorID, " +
-                            "addressID   	AS  workAddressID, " +
-                            "streetAddress 	AS  workStreetAddress, " +
-                            "postalCode  	AS  workPostalCode, " +
-                            "city 	    	AS  workCity, " +
-                            "province    	AS  workProvince " +
+                            "addressID      AS  workAddressID, " +
+                            "streetAddress  AS  workStreetAddress, " +
+                            "postalCode     AS  workPostalCode, " +
+                            "city           AS  workCity, " +
+                            "province       AS  workProvince " +
                         "FROM Doctor  " +
                         "NATURAL JOIN WorkAddresses " +
                         "NATURAL JOIN Address " +
