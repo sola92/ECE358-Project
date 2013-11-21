@@ -777,7 +777,7 @@ public class ProjectDBAO {
         } 
 
         if(licenseYearEnd != null && licenseYearStart == null) {
-            where += " AND licenseYear =< " + licenseYearEnd;
+            where += " AND licenseYear <= " + licenseYearEnd;
         }        
         
         if(licenseYearEnd != null && licenseYearStart != null) {
@@ -789,7 +789,7 @@ public class ProjectDBAO {
         }  
 
         if(averageRatingEnd != null && averageRatingStart == null) {
-            where += " AND averageRating =< " + averageRatingEnd;
+            where += " AND averageRating <= " + averageRatingEnd;
         }     
 
         if(averageRatingEnd != null && averageRatingStart != null) {
