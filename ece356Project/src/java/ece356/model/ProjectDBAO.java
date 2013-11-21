@@ -19,10 +19,10 @@ import java.util.List;
 public class ProjectDBAO {
     //public static final String host = "localhost";
     public static final String host = "eceweb";
-    public static final String url = "jdbc:mysql://" + host + ":3306/";
-    public static final String nid = "oaogunsa";
+    public static final String url  = "jdbc:mysql://" + host + ":3306/";
+    public static final String nid  = "oaogunsa";
     public static final String user = "user_" + nid;
-    public static final String pwd = "user_" + nid;
+    public static final String pwd  = "user_" + nid;
     
     private static Patient rowToPatient(ResultSet result) throws SQLException {
         int userID       = result.getInt("userID");
@@ -43,38 +43,37 @@ public class ProjectDBAO {
 
     private static Doctor rowToDoctor(ResultSet result) 
         throws ClassNotFoundException, SQLException {
+        Date dob            = result.getDate("dob");
         int userID          = result.getInt("userID");
+        int gender          = result.getInt("gender");
         String alias        = result.getString("alias");
         String lastName     = result.getString("lastName");
+        int licenseYear     = result.getInt("licenseYear");
         String firstName    = result.getString("firstName"); 
-        Date dob            = result.getDate("dob");
-        int gender          = result.getInt("gender");
-        int licenseYear      = result.getInt("licenseYear");
         Address homeAddress = getAddress(result.getInt("homeAddressID"));
         return new Doctor(userID, firstName,lastName, alias, 
-                   dob, gender, licenseYear,
-                    homeAddress);    
+                        dob, gender, licenseYear, homeAddress);    
     }    
     
             
     private static Address rowToAddress(ResultSet result) 
         throws ClassNotFoundException, SQLException {
-        int addressID           = result.getInt("addressID");
-        String streetAddress       = result.getString("streetAddress");
-        String postalCode       = result.getString("postalCode");
         String city             = result.getString("city");
-        String province         = result.getString("province");
+        int addressID           = result.getInt("addressID");        
+        String province         = result.getString("province");        
+        String postalCode       = result.getString("postalCode");
+        String streetAddress    = result.getString("streetAddress");
         return new Address(addressID, streetAddress, postalCode, city, province);    
     } 
     
     private static Review rowToReview(ResultSet result) 
         throws ClassNotFoundException, SQLException {
-        int rating           = result.getInt("rating");
-        int reviewID           = result.getInt("reviewID");
-        Date reviewDate       = result.getDate("reviewDate");
+        int rating        = result.getInt("rating");
         String note       = result.getString("note");
-        Doctor doctor             = getDoctorByID(result.getInt("doctorID"));
-        Patient patient         = getPatientByID(result.getInt("patientID"));
+        int reviewID      = result.getInt("reviewID");
+        Doctor doctor     = getDoctorByID(result.getInt("doctorID"));
+        Date reviewDate   = result.getDate("reviewDate");
+        Patient patient   = getPatientByID(result.getInt("patientID"));
         return new Review(rating, reviewID, reviewDate, note, doctor, patient);    
     } 
     
@@ -97,11 +96,11 @@ public class ProjectDBAO {
     
     public static Boolean aliasIsFree(String alias)
             throws ClassNotFoundException, SQLException {
-        Boolean isFree = false;
-        Connection connection       = null;
-        PreparedStatement statement = null;        
-        String query = "SELECT COUNT(*) FROM User WHERE alias = ? ";
         alias = alias.toLowerCase();
+        Boolean              isFree  = false;
+        Connection        connection = null;
+        PreparedStatement statement  = null;        
+        final String query = "SELECT COUNT(*) FROM User WHERE alias = ? ";
         try {
             connection   = getConnection();
             statement    = connection.prepareStatement(query);
